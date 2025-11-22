@@ -22,14 +22,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
   const { rate, totalResolved, phrase } = useMemo(() => {
     const resolved = worries.filter((w) => w.status !== 'pending');
     const total = resolved.length;
-    const formattedName = userName ? formatName(userName) : "";
+    const n = userName ? formatName(userName) : "";
+    const hasName = n.length > 0;
     
     if (total === 0) {
       return { 
         rate: 0, 
         totalResolved: 0, 
-        phrase: formattedName 
-            ? `Bonjour ${formattedName}. Dépose une première pensée pour commencer.`
+        phrase: hasName 
+            ? `Bonjour ${n}. Dépose une première pensée pour commencer.`
             : "Commence par déposer une angoisse pour construire ta lucidité." 
       };
     }
@@ -39,23 +40,62 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
 
     let text = "";
     
-    if (calculatedRate >= 90) {
-        text = formattedName ? `Bravo ${formattedName}. Tes peurs sont presque toujours des illusions.` : "Tes peurs sont presque toujours des illusions.";
-    } else if (calculatedRate >= 75) {
-        text = "La réalité est bien plus douce que tes pensées.";
-    } else if (calculatedRate >= 65) {
-        text = formattedName ? `${formattedName}, tu reprends le contrôle.` : "Tu reprends le contrôle.";
-    } else {
-        // Phrases de réconfort pour taux < 65% - ADOUCIES
-        const comfortPhrases = [
-            "Respire. Tes pensées ne sont pas la réalité.",
-            "L'anxiété ment souvent, les chiffres le prouvent.",
-            "C'est normal d'avoir peur, mais regarde les faits.",
-            "Tu avances, petit à petit. C'est ce qui compte.",
-            "Ne sois pas dur avec toi-même. Observe simplement.",
-            "Cette statistique n'est qu'un début, courage."
+    // Phrases plus riches et personnalisées par paliers
+    if (calculatedRate === 100) {
+        const phrases = [
+            hasName ? `Incroyable ${n}. Aucune peur ne s'est réalisée.` : "Incroyable. Aucune peur ne s'est réalisée.",
+            "La réalité est ton terrain de jeu, pas tes angoisses.",
+            hasName ? `Tu es invincible, ${n}. 100% de lucidité.` : "Une lucidité totale. Tu es invincible.",
+            "Ton esprit est une forteresse imprenable.",
+            "Regarde ça. L'anxiété n'a aucune prise sur toi."
         ];
-        text = comfortPhrases[total % comfortPhrases.length];
+        text = phrases[total % phrases.length];
+    } else if (calculatedRate >= 90) {
+        const phrases = [
+            hasName ? `Presque parfait, ${n}. Tu vois clair.` : "Presque parfait. Tu vois clair maintenant.",
+            "Tes peurs sont des fantômes. Tu les traverses sans mal.",
+            "Une lucidité impressionnante. Continue.",
+            hasName ? `${n}, tu es la preuve que la peur ment.` : "Tu es la preuve que la peur ment.",
+            "La sérénité n'est plus très loin."
+        ];
+        text = phrases[total % phrases.length];
+    } else if (calculatedRate >= 80) {
+        const phrases = [
+            hasName ? `C'est excellent, ${n}.` : "C'est un excellent score.",
+            "Tu apprends à distinguer le bruit du signal.",
+            "La grande majorité de tes craintes étaient fausses.",
+            "Tu gagnes du terrain chaque jour. Bravo.",
+            hasName ? `Ta vision s'éclaircit, ${n}.` : "Ta vision s'éclaircit de jour en jour."
+        ];
+        text = phrases[total % phrases.length];
+    } else if (calculatedRate >= 60) {
+        const phrases = [
+            hasName ? `Tu es sur la bonne voie, ${n}.` : "Tu es sur la bonne voie.",
+            "Plus d'une fois sur deux, ton angoisse se trompe.",
+            "Tu reprends le contrôle, doucement mais sûrement.",
+            "Respire. Les faits sont plus rassurants que tes pensées.",
+            hasName ? `Crois en ce chiffre, ${n}.` : "Crois en ce chiffre, pas en tes doutes."
+        ];
+        text = phrases[total % phrases.length];
+    } else if (calculatedRate >= 40) {
+        const phrases = [
+            "C'est un combat, et tu es en train de l'apprendre.",
+            hasName ? `Ne lâche rien ${n}.` : "Ne lâche rien. La lucidité est un muscle.",
+            "Observe simplement. Tes peurs ont tort la moitié du temps.",
+            "L'équilibre est fragile, mais tu es debout.",
+            "Chaque vérification te rend plus fort(e)."
+        ];
+        text = phrases[total % phrases.length];
+    } else {
+        const phrases = [
+            hasName ? `Courage ${n}. Tu es toujours là.` : "Courage. Tu es toujours là.",
+            "Ce chiffre n'est qu'un début. Ne te juge pas.",
+            "L'important est d'affronter la réalité.",
+            "Même si tes peurs arrivent, tu as la force de gérer.",
+            hasName ? `Doucement, ${n}. Un pas après l'autre.` : "Doucement. Un pas après l'autre.",
+            "L'anxiété rend les choses pires qu'elles ne le sont."
+        ];
+        text = phrases[total % phrases.length];
     }
 
     return { rate: calculatedRate, totalResolved: total, phrase: text };
@@ -105,11 +145,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
       {/* Reassuring Phrase */}
       <motion.p 
         {...({
-          initial: { opacity: 0 },
-          animate: { opacity: 1 },
-          transition: { delay: 0.6 }
+            key: phrase, // Key change triggers animation on phrase update
+            initial: { opacity: 0, y: 10 },
+            animate: { opacity: 1, y: 0 },
+            transition: { duration: 0.5 }
         } as any)}
-        className="text-center text-lg md:text-2xl text-slate-300 font-light max-w-xl leading-relaxed mb-12"
+        className="text-center text-lg md:text-2xl text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
       >
         {phrase}
       </motion.p>
