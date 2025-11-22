@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Worry } from '../types';
@@ -12,8 +13,10 @@ export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry,
   return (
     <div className="fixed inset-0 z-[100] bg-midnight/95 backdrop-blur-md flex flex-col items-center justify-center p-6">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        {...({
+          initial: { opacity: 0, scale: 0.9 },
+          animate: { opacity: 1, scale: 1 }
+        } as any)}
         className="w-full max-w-md"
       >
         <span className="block text-center text-accent text-sm font-bold tracking-[0.2em] uppercase mb-8">

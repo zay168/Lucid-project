@@ -1,8 +1,11 @@
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Bell, ShieldCheck, User } from 'lucide-react';
 import TextType from './TextType';
+
+// Fix for missing Variants export in some environments
+type Variants = any;
 
 interface OnboardingProps {
   onComplete: (name: string) => void;
@@ -42,17 +45,21 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         {step === 0 && (
           <motion.div
             key="step0"
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            {...({
+              variants: variants,
+              initial: "enter",
+              animate: "center",
+              exit: "exit",
+              transition: { type: "spring", stiffness: 300, damping: 30 }
+            } as any)}
             className="flex flex-col items-center max-w-sm"
           >
             <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2 }}
+                {...({
+                  initial: { scale: 0 },
+                  animate: { scale: 1 },
+                  transition: { delay: 0.2 }
+                } as any)}
                 className="w-24 h-24 rounded-3xl bg-slate-800 flex items-center justify-center mb-8 shadow-[0_0_40px_rgba(167,139,250,0.15)] rotate-3"
             >
                 <ShieldCheck size={48} className="text-accent" strokeWidth={2} />
@@ -74,10 +81,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         {step === 1 && (
           <motion.div
             key="step1"
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            {...({
+              variants: variants,
+              initial: "enter",
+              animate: "center",
+              exit: "exit"
+            } as any)}
             className="flex flex-col items-center max-w-sm w-full min-h-[400px] justify-center"
           >
             <h2 className="text-3xl text-white font-bold mb-12">
@@ -104,9 +113,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
             </div>
 
             <motion.button 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 3 }}
+                {...({
+                  initial: { opacity: 0, y: 20 },
+                  animate: { opacity: 1, y: 0 },
+                  transition: { delay: 3 }
+                } as any)}
                 onClick={nextStep}
                 className="mt-16 px-8 py-4 rounded-2xl bg-surface border border-slate-700 text-white font-bold text-lg hover:bg-slate-800 hover:border-white/20 transition-all w-full"
             >
@@ -119,10 +130,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         {step === 2 && (
           <motion.div
             key="step2"
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            {...({
+              variants: variants,
+              initial: "enter",
+              animate: "center",
+              exit: "exit"
+            } as any)}
             className="flex flex-col items-center w-full max-w-sm"
           >
             <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mb-8 -rotate-3">
@@ -157,10 +170,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
         {step === 3 && (
           <motion.div
             key="step3"
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            {...({
+              variants: variants,
+              initial: "enter",
+              animate: "center",
+              exit: "exit"
+            } as any)}
             className="flex flex-col items-center max-w-sm"
           >
             <div className="relative mb-8">

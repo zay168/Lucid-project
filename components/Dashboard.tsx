@@ -67,9 +67,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
       {/* The Big Number */}
       <div className="flex flex-col items-center justify-center mb-12">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          {...({
+            initial: { opacity: 0, scale: 0.8 },
+            animate: { opacity: 1, scale: 1 },
+            transition: { duration: 0.8, ease: "easeOut" }
+          } as any)}
           className="relative"
         >
           <span className="text-[8rem] md:text-[10rem] font-thin leading-none text-accent tracking-tighter tabular-nums">
@@ -78,9 +80,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
         </motion.div>
         
         <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+          {...({
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            transition: { delay: 0.3, duration: 0.8 }
+          } as any)}
           className="text-slate-400 text-sm md:text-base uppercase tracking-[0.2em] mt-2 font-medium"
         >
           Taux de Lucidité
@@ -89,9 +93,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
 
       {/* Reassuring Phrase */}
       <motion.p 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        {...({
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
+          transition: { delay: 0.6 }
+        } as any)}
         className="text-center text-lg md:text-2xl text-slate-300 font-light max-w-xl leading-relaxed mb-12"
       >
         {phrase}
@@ -99,11 +105,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
 
       {/* Action Button - Centered in flow */}
       <motion.button
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        {...({
+          initial: { opacity: 0, scale: 0.8 },
+          animate: { opacity: 1, scale: 1 },
+          transition: { delay: 0.8 },
+          whileHover: { scale: 1.05 },
+          whileTap: { scale: 0.95 }
+        } as any)}
         onClick={onAddPress}
         className="bg-surface border border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-6 md:p-8 rounded-full text-accent hover:bg-slate-900 hover:border-accent/50 transition-colors group"
         aria-label="Ajouter une angoisse"

@@ -74,9 +74,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
         {showExitConfirm && (
           <div className="absolute inset-0 z-[60] bg-midnight/90 backdrop-blur-sm flex items-center justify-center p-6">
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              {...({
+                initial: { scale: 0.9, opacity: 0 },
+                animate: { scale: 1, opacity: 1 },
+                exit: { scale: 0.9, opacity: 0 }
+              } as any)}
               className="bg-surface border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full"
             >
               <div className="flex flex-col items-center text-center">
@@ -120,9 +122,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
         {!isLocking ? (
           <motion.div 
             key="form"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
+            {...({
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+              exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } }
+            } as any)}
             className="flex-1 flex flex-col max-w-3xl mx-auto w-full"
           >
             <h2 className="text-2xl font-light text-white mb-6">
@@ -180,9 +184,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               <AnimatePresence>
                 {selectionMode === 'custom' && (
                     <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
+                        {...({
+                          initial: { opacity: 0, height: 0 },
+                          animate: { opacity: 1, height: 'auto' },
+                          exit: { opacity: 0, height: 0 }
+                        } as any)}
                         className="mb-6 overflow-hidden"
                     >
                         <input 
@@ -222,18 +228,20 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
           >
             {/* 1. PAPER CRUMPLING ANIMATION */}
             <motion.div
-              initial={{ scale: 1, opacity: 1, borderRadius: "2px" }}
-              animate={{ 
-                scale: [1, 0.6, 0.1], 
-                rotate: [0, -5, 15, 720],
-                y: [0, 0, 150], // Drops down into the safe
-                opacity: [1, 1, 0] // Fades out as it enters safe
-              }}
-              transition={{ 
-                duration: 1.2, 
-                times: [0, 0.4, 1],
-                ease: "easeInOut"
-              }}
+              {...({
+                initial: { scale: 1, opacity: 1, borderRadius: "2px" },
+                animate: { 
+                  scale: [1, 0.6, 0.1], 
+                  rotate: [0, -5, 15, 720],
+                  y: [0, 0, 150], // Drops down into the safe
+                  opacity: [1, 1, 0] // Fades out as it enters safe
+                },
+                transition: { 
+                  duration: 1.2, 
+                  times: [0, 0.4, 1],
+                  ease: "easeInOut"
+                }
+              } as any)}
               className="absolute z-20 bg-slate-200 text-midnight p-6 w-64 h-80 shadow-xl overflow-hidden"
               style={{ transformOrigin: "center" }}
             >
@@ -244,9 +252,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
 
             {/* 2. THE SAFE (Coffre-fort) */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 100 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.5 }}
+              {...({
+                initial: { opacity: 0, scale: 0.8, y: 100 },
+                animate: { opacity: 1, scale: 1, y: 0 },
+                transition: { delay: 0.5, duration: 0.5 }
+              } as any)}
               className="relative w-48 h-48 bg-surface border-4 border-slate-700 rounded-3xl flex items-center justify-center overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] z-10"
             >
               {/* Safe Interior Details */}
@@ -254,16 +264,20 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               
               {/* 3. SAFE DOOR CLOSING */}
               <motion.div 
-                initial={{ x: "100%" }}
-                animate={{ x: "0%" }}
-                transition={{ delay: 1.4, duration: 0.4, type: "spring", bounce: 0.1 }}
+                {...({
+                  initial: { x: "100%" },
+                  animate: { x: "0%" },
+                  transition: { delay: 1.4, duration: 0.4, type: "spring", bounce: 0.1 }
+                } as any)}
                 className="absolute inset-0 bg-slate-800 border-l-2 border-slate-600 z-30 flex items-center justify-center"
               >
                  {/* The Lock on the door */}
                  <motion.div
-                    initial={{ scale: 0, rotate: -45 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ delay: 1.9, type: "spring" }}
+                    {...({
+                      initial: { scale: 0, rotate: -45 },
+                      animate: { scale: 1, rotate: 0 },
+                      transition: { delay: 1.9, type: "spring" }
+                    } as any)}
                     className="p-4 bg-slate-900 rounded-full border border-slate-700 shadow-lg text-emerald-500"
                  >
                     <Lock size={32} strokeWidth={2.5} />
@@ -273,9 +287,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
 
             {/* 4. FINAL TEXT */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.2 }}
+              {...({
+                initial: { opacity: 0, y: 20 },
+                animate: { opacity: 1, y: 0 },
+                transition: { delay: 2.2 }
+              } as any)}
               className="mt-12 text-center"
             >
               <h3 className="text-xl text-white font-light tracking-widest uppercase mb-2">Sécurisé</h3>

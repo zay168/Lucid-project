@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Capture } from './components/Capture';
@@ -146,9 +147,11 @@ export default function App() {
         {hasEnteredApp && isOnboardingComplete && (
           <motion.div 
             key="app"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            {...({
+              initial: { opacity: 0 },
+              animate: { opacity: 1 },
+              transition: { duration: 0.5 }
+            } as any)}
             className="h-screen w-full flex flex-col"
           >
             {/* Navigation Top Bar */}

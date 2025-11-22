@@ -59,9 +59,11 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; inde
 
   return (
     <motion.li 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      {...({
+        initial: { opacity: 0, y: 10 },
+        animate: { opacity: 1, y: 0 },
+        transition: { delay: index * 0.05 }
+      } as any)}
       // Pointer events for long press
       onPointerDown={startPress}
       onPointerUp={cancelPress}
@@ -79,9 +81,11 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; inde
         <AnimatePresence>
             {isPressing && (
                 <motion.div 
-                    initial={{ width: '0%' }}
-                    animate={{ width: `${pressProgress}%` }}
-                    transition={{ ease: "linear", duration: 0 }} // Controlled by state
+                    {...({
+                        initial: { width: '0%' },
+                        animate: { width: `${pressProgress}%` },
+                        transition: { ease: "linear", duration: 0 }
+                    } as any)}
                     className="absolute bottom-0 left-0 h-1 bg-red-600 z-10"
                     style={{ opacity: pressProgress > 0 ? 1 : 0 }}
                 />
@@ -145,8 +149,10 @@ export const Archive: React.FC<ArchiveProps> = ({ worries, onDelete }) => {
         {/* Statistics Summary */}
         {stats.total > 0 && (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            {...({
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 }
+            } as any)}
             className="grid grid-cols-3 gap-2 mb-8"
           >
             <div className="bg-surface/50 border border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">

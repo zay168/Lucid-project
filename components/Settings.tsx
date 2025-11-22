@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Trash2, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -21,9 +22,11 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      {...({
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -20 }
+      } as any)}
       className="h-full flex flex-col p-6 relative z-20 overflow-y-auto"
     >
         <div className="max-w-2xl mx-auto w-full h-full flex flex-col pt-4">
@@ -90,8 +93,10 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                     </button>
                 ) : (
                     <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        {...({
+                          initial: { opacity: 0, height: 0 },
+                          animate: { opacity: 1, height: 'auto' }
+                        } as any)}
                         className="space-y-4 bg-red-900/10 p-6 rounded-xl border border-red-900/30 max-w-md"
                     >
                         <p className="text-red-400 text-lg font-medium">
