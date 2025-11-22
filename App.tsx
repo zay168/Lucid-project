@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Capture } from './components/Capture';
@@ -7,7 +6,9 @@ import { Header } from './components/Header';
 import { VerificationOverlay } from './components/VerificationOverlay';
 import { Onboarding } from './components/Onboarding';
 import { Settings } from './components/Settings';
+import { Landing } from './components/Landing';
 import { Worry, ViewState, MOCK_INITIAL_DATA } from './types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const STORAGE_KEY = 'lucid_worries_v1';
 const ONBOARDING_KEY = 'lucid_onboarding_v1';
@@ -19,7 +20,8 @@ export default function App() {
   const [worryToVerify, setWorryToVerify] = useState<Worry | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // Onboarding state
+  // States for flow
+  const [hasEnteredApp, setHasEnteredApp] = useState(false);
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [userName, setUserName] = useState<string>('');
 
@@ -63,18 +65,15 @@ export default function App() {
 
     const checkVerifications = () => {
       const now = Date.now();
-      // Find the first pending worry that is past its checkDate
       const overdue = worries.find(
         w => w.status === 'pending' && w.checkDate <= now
       );
       
-      // Only set if we aren't already verifying one
       if (overdue && !worryToVerify) {
         setWorryToVerify(overdue);
       }
     };
 
-    // Check immediately and then set an interval (every minute is fine)
     checkVerifications();
     const interval = setInterval(checkVerifications, 60000);
     return () => clearInterval(interval);
@@ -94,7 +93,7 @@ export default function App() {
 
   const handleResolveWorry = useCallback((id: string, status: 'happened' | 'did_not_happen') => {
     setWorries(prev => prev.map(w => w.id === id ? { ...w, status } : w));
-    setWorryToVerify(null); // Close overlay
+    setWorryToVerify(null);
   }, []);
 
   const handleDeleteWorry = useCallback((id: string) => {
@@ -122,70 +121,89 @@ export default function App() {
     setWorries([]);
     setUserName('');
     setIsOnboardingComplete(false);
+    setHasEnteredApp(false); // Return to landing on reset
     setView('dashboard');
   };
 
   if (!isLoaded) return <div className="bg-midnight h-screen w-screen" />;
 
-  // Show Onboarding if not complete
-  if (!isOnboardingComplete) {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
-  }
-
   return (
     <div className="bg-midnight min-h-screen text-slate-200 font-sans overflow-hidden relative selection:bg-accent selection:text-midnight">
+      <AnimatePresence mode="wait">
+        {/* 1. Landing Page */}
+        {!hasEnteredApp && (
+          <Landing key="landing" onEnter={() => setHasEnteredApp(true)} />
+        )}
+
+        {/* 2. Onboarding (if new user) */}
+        {hasEnteredApp && !isOnboardingComplete && (
+          <motion.div key="onboarding" className="fixed inset-0 z-40">
+             <Onboarding onComplete={handleOnboardingComplete} />
+          </motion.div>
+        )}
       
-      {/* Navigation Top Bar (Website Style) */}
-      <Header currentView={view} onChange={setView} />
+        {/* 3. Main App */}
+        {hasEnteredApp && isOnboardingComplete && (
+          <motion.div 
+            key="app"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="h-screen w-full flex flex-col"
+          >
+            {/* Navigation Top Bar */}
+            <Header currentView={view} onChange={setView} />
 
-      {/* Main Content Area - Full Screen */}
-      <main className="h-screen w-full mx-auto relative bg-midnight overflow-hidden flex flex-col pt-24 md:pt-32">
-        
-        {/* Views Container */}
-        <div className="flex-1 relative w-full max-w-7xl mx-auto">
-            {view === 'dashboard' && (
-            <Dashboard 
-                worries={worries} 
-                onAddPress={() => setView('capture')}
-                // onSettingsPress enlevé car géré par le Header
-                onSettingsPress={() => setView('settings')}
-                userName={userName}
-            />
-            )}
+            {/* Main Content Area */}
+            <main className="flex-1 w-full mx-auto relative bg-midnight overflow-hidden flex flex-col pt-24 md:pt-32">
+              
+              {/* Views Container */}
+              <div className="flex-1 relative w-full max-w-7xl mx-auto">
+                  {view === 'dashboard' && (
+                  <Dashboard 
+                      worries={worries} 
+                      onAddPress={() => setView('capture')}
+                      onSettingsPress={() => setView('settings')}
+                      userName={userName}
+                  />
+                  )}
 
-            {view === 'archive' && (
-            <Archive 
-                worries={worries} 
-                onDelete={handleDeleteWorry}
-            />
-            )}
+                  {view === 'archive' && (
+                  <Archive 
+                      worries={worries} 
+                      onDelete={handleDeleteWorry}
+                  />
+                  )}
 
-            {view === 'settings' && (
-                <Settings 
-                    currentName={userName}
-                    onUpdateName={handleUpdateName}
-                    onBack={() => setView('dashboard')} // Fallback if needed inside component
-                    onReset={handleResetData}
+                  {view === 'settings' && (
+                      <Settings 
+                          currentName={userName}
+                          onUpdateName={handleUpdateName}
+                          onBack={() => setView('dashboard')}
+                          onReset={handleResetData}
+                      />
+                  )}
+              </div>
+
+              {/* Full Screen Modals */}
+              {view === 'capture' && (
+                <Capture 
+                  onClose={() => setView('dashboard')} 
+                  onSave={handleAddWorry} 
                 />
-            )}
-        </div>
+              )}
 
-        {/* Full Screen Modals */}
-        {view === 'capture' && (
-          <Capture 
-            onClose={() => setView('dashboard')} 
-            onSave={handleAddWorry} 
-          />
+              {/* Reality Check Overlay */}
+              {worryToVerify && (
+                <VerificationOverlay 
+                  worry={worryToVerify} 
+                  onResolve={handleResolveWorry} 
+                />
+              )}
+            </main>
+          </motion.div>
         )}
-
-        {/* Reality Check Overlay - Highest Priority */}
-        {worryToVerify && (
-          <VerificationOverlay 
-            worry={worryToVerify} 
-            onResolve={handleResolveWorry} 
-          />
-        )}
-      </main>
+      </AnimatePresence>
     </div>
   );
 }
