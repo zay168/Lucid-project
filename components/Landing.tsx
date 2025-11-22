@@ -122,242 +122,208 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
       </section>
 
 
-      {/* --- SECTION 2: PHILOSOPHY --- */}
-      <section className="py-32 px-6 bg-surface/30 relative z-10 border-y border-slate-800/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
+      {/* --- SECTION 2: PHILOSOPHY (Grain Applied Here) --- */}
+      <section className="py-32 px-6 bg-surface/30 relative z-10 border-y border-slate-800/50 backdrop-blur-sm overflow-hidden">
+        {/* Cinematic Noise specifically for this section */}
+        <div className="cinematic-noise" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <Quote size={48} className="text-accent/30 mx-auto mb-8 rotate-180" />
+          <motion.blockquote 
             {...({
-              initial: { opacity: 0, scale: 0.9 },
+              initial: { opacity: 0, scale: 0.95 },
               whileInView: { opacity: 1, scale: 1 },
-              viewport: { once: true },
-              transition: { duration: 0.8 }
+              transition: { duration: 1 }
             } as any)}
+            className="text-3xl md:text-5xl font-serif italic text-slate-200 leading-tight mb-8"
           >
-            <Quote size={48} className="text-accent/30 mx-auto mb-8" />
-            <blockquote className="text-3xl md:text-5xl font-serif text-slate-200 leading-snug italic mb-8">
-              "Nous souffrons plus souvent en imagination qu'en réalité."
-            </blockquote>
-            <cite className="text-accent uppercase tracking-widest font-bold not-italic flex items-center justify-center gap-2">
-              <span className="w-8 h-[1px] bg-accent/50" /> Sénèque <span className="w-8 h-[1px] bg-accent/50" />
-            </cite>
-          </motion.div>
+            "Nous souffrons plus souvent en imagination qu'en réalité."
+          </motion.blockquote>
+          <cite className="text-accent text-lg font-bold tracking-widest uppercase not-italic">— Sénèque</cite>
         </div>
       </section>
 
 
-      {/* --- SECTION 3: SCIENCE & FEATURES --- */}
+      {/* --- SECTION 3: METHOD --- */}
       <section className="py-32 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            {...({
-              initial: { opacity: 0, y: 20 },
-              whileInView: { opacity: 1, y: 0 },
-              viewport: { once: true }
-            } as any)}
-            className="text-center mb-20"
-          >
-            <h2 className="text-sm font-bold text-accent uppercase tracking-[0.3em] mb-4">La Logique</h2>
-            <h3 className="text-3xl md:text-5xl text-white font-bold">Pourquoi ça marche ?</h3>
-          </motion.div>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl font-bold text-white mb-4">Le Protocole LUCID</h2>
+            <p className="text-slate-400">Comment déconstruire l'anxiété en 3 étapes.</p>
+          </div>
 
           <motion.div 
             {...({
-              variants: staggerContainer,
               initial: "hidden",
               whileInView: "visible",
-              viewport: { once: true }
+              viewport: { once: true, margin: "-100px" },
+              variants: staggerContainer
             } as any)}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid md:grid-cols-3 gap-12"
           >
-            {/* Feature 1 */}
-            <motion.div variants={fadeIn} className="bg-surface/50 border border-slate-800 p-8 rounded-3xl hover:bg-surface hover:border-accent/30 transition-colors duration-300 group">
-              <div className="w-14 h-14 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Zap className="text-indigo-400" size={28} />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">Thérapie Cognitive</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Basé sur la restructuration cognitive. En confrontant vos prédictions à la réalité, vous rééduquez votre cerveau à moins paniquer.
-              </p>
-            </motion.div>
-
-            {/* Feature 2 */}
-            <motion.div variants={fadeIn} className="bg-surface/50 border border-slate-800 p-8 rounded-3xl hover:bg-surface hover:border-accent/30 transition-colors duration-300 group">
-              <div className="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Shield className="text-emerald-400" size={28} />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">Totalement Privé</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Pas de cloud, pas de compte, pas de tracking. Vos pensées les plus intimes restent cryptées dans votre appareil.
-              </p>
-            </motion.div>
-
-            {/* Feature 3 */}
-            <motion.div variants={fadeIn} className="bg-surface/50 border border-slate-800 p-8 rounded-3xl hover:bg-surface hover:border-accent/30 transition-colors duration-300 group">
-              <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Moon className="text-purple-400" size={28} />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">Midnight Mode</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Une interface ultra-sombre conçue pour ne pas agresser les yeux lors des insomnies anxieuses de 3h du matin.
-              </p>
-            </motion.div>
+            {[
+              { 
+                icon: Lock, 
+                title: "1. Verrouiller", 
+                desc: "Écrivez votre peur. Définissez une date de vérification. Enfermez-la dans le coffre pour libérer votre esprit." 
+              },
+              { 
+                icon: Hourglass, 
+                title: "2. Patienter", 
+                desc: "Vivez votre vie. Laissez le temps faire son œuvre. L'application garde la trace pour vous." 
+              },
+              { 
+                icon: CheckCircle2, 
+                title: "3. Vérifier", 
+                desc: "Le jour J, confrontez la peur à la réalité. A-t-elle eu lieu ? Le plus souvent, la réponse est non." 
+              }
+            ].map((item, i) => (
+              <motion.div 
+                key={i}
+                variants={fadeIn}
+                className="bg-surface/40 border border-slate-800 p-8 rounded-3xl hover:bg-surface/60 transition-colors group"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 border border-slate-800">
+                  <item.icon size={32} className="text-slate-300 group-hover:text-accent transition-colors" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-4">{item.title}</h3>
+                <p className="text-slate-400 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-
-      {/* --- SECTION 4: METHOD (Workflow) --- */}
-      <section className="py-24 px-6 relative z-10 bg-gradient-to-b from-transparent to-surface/30">
+      {/* --- SECTION 4: SCIENCE & PRIVACY --- */}
+      <section className="py-32 px-6 relative z-10 border-t border-slate-800/30">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Step 1 */}
-            <motion.div 
-              {...({
-                initial: { opacity: 0, y: 30 },
-                whileInView: { opacity: 1, y: 0 },
-                viewport: { once: true },
-                transition: { delay: 0.1 }
-              } as any)}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:border-accent/50 transition-colors relative">
-                <div className="absolute inset-0 bg-accent/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Lock size={32} className="text-slate-300 group-hover:text-accent transition-colors relative z-10" />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">1. Capturer</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Verrouillez l'angoisse.
-              </p>
-            </motion.div>
+           <motion.div 
+             {...({
+               initial: "hidden",
+               whileInView: "visible",
+               viewport: { once: true },
+               variants: staggerContainer
+             } as any)}
+             className="grid md:grid-cols-3 gap-6"
+           >
+              {/* Card 1: CBT */}
+              <motion.div variants={fadeIn} className="col-span-1 md:col-span-2 bg-gradient-to-br from-surface to-slate-900 border border-slate-800 p-10 rounded-3xl relative overflow-hidden">
+                  <div className="relative z-10">
+                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
+                          <BrainCircuit className="text-accent" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3">Basé sur la TCC</h3>
+                      <p className="text-slate-400 max-w-lg">
+                          La Thérapie Cognitive et Comportementale (TCC) est la méthode la plus validée scientifiquement pour traiter l'anxiété. LUCID applique le principe de "restructuration cognitive" en vous forçant à tester vos hypothèses négatives.
+                      </p>
+                  </div>
+                  <div className="absolute right-0 bottom-0 opacity-5 transform translate-x-1/4 translate-y-1/4">
+                      <BrainCircuit size={300} />
+                  </div>
+              </motion.div>
 
-            {/* Step 2 */}
-            <motion.div 
-              {...({
-                initial: { opacity: 0, y: 30 },
-                whileInView: { opacity: 1, y: 0 },
-                viewport: { once: true },
-                transition: { delay: 0.3 }
-              } as any)}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:border-accent/50 transition-colors relative">
-                 <div className="absolute inset-0 bg-accent/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Hourglass size={32} className="text-slate-300 group-hover:text-accent transition-colors relative z-10" />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">2. Vivre</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Laissez le temps faire son œuvre.
-              </p>
-            </motion.div>
+              {/* Card 2: Privacy */}
+              <motion.div variants={fadeIn} className="bg-surface border border-slate-800 p-10 rounded-3xl relative overflow-hidden group hover:border-emerald-900/50 transition-colors">
+                  <div className="relative z-10">
+                      <div className="w-12 h-12 bg-emerald-900/20 rounded-xl flex items-center justify-center mb-6">
+                          <Shield className="text-emerald-500" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3">Local First</h3>
+                      <p className="text-slate-400">
+                          Vos pensées vous appartiennent. Aucune donnée ne quitte votre appareil.
+                      </p>
+                  </div>
+              </motion.div>
 
-            {/* Step 3 */}
-            <motion.div 
-              {...({
-                initial: { opacity: 0, y: 30 },
-                whileInView: { opacity: 1, y: 0 },
-                viewport: { once: true },
-                transition: { delay: 0.5 }
-              } as any)}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="w-20 h-20 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-6 group-hover:border-emerald-500/50 transition-colors relative">
-                 <div className="absolute inset-0 bg-emerald-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <CheckCircle2 size={32} className="text-slate-300 group-hover:text-emerald-400 transition-colors relative z-10" />
-              </div>
-              <h4 className="text-xl text-white font-bold mb-3">3. Vérifier</h4>
-              <p className="text-slate-400 leading-relaxed text-sm">
-                Constatez que rien n'est arrivé.
-              </p>
-            </motion.div>
-          </div>
+              {/* Card 3: Design */}
+              <motion.div variants={fadeIn} className="bg-surface border border-slate-800 p-10 rounded-3xl relative overflow-hidden">
+                  <div className="relative z-10">
+                      <div className="w-12 h-12 bg-slate-800 rounded-xl flex items-center justify-center mb-6">
+                          <Moon className="text-slate-300" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white mb-3">Mode Sombre</h3>
+                      <p className="text-slate-400">
+                          Conçu pour être utilisé la nuit, quand l'anxiété frappe le plus fort.
+                      </p>
+                  </div>
+              </motion.div>
+
+              {/* Card 4: Speed */}
+              <motion.div variants={fadeIn} className="col-span-1 md:col-span-2 bg-surface border border-slate-800 p-10 rounded-3xl relative overflow-hidden">
+                   <div className="flex flex-col md:flex-row md:items-center gap-8 relative z-10">
+                        <div className="flex-1">
+                            <div className="w-12 h-12 bg-yellow-900/20 rounded-xl flex items-center justify-center mb-6">
+                                <Zap className="text-yellow-500" />
+                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-3">Instantané</h3>
+                            <p className="text-slate-400">
+                                Pas de chargement, pas de compte à créer. Lancez l'app, libérez votre esprit en 5 secondes.
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-4 pr-8">
+                             <div className="text-right">
+                                 <span className="block text-4xl font-bold text-white">0.1s</span>
+                                 <span className="text-xs text-slate-500 uppercase tracking-wider">Latence</span>
+                             </div>
+                             <div className="h-12 w-px bg-slate-800" />
+                             <div className="text-right">
+                                 <span className="block text-4xl font-bold text-white">0%</span>
+                                 <span className="text-xs text-slate-500 uppercase tracking-wider">Tracker</span>
+                             </div>
+                        </div>
+                   </div>
+              </motion.div>
+           </motion.div>
         </div>
       </section>
-
 
       {/* --- SECTION 5: CREATOR SPOTLIGHT --- */}
       <section className="py-32 px-6 relative z-10">
-        <motion.div 
-          {...({
-            initial: { opacity: 0, scale: 0.95 },
-            whileInView: { opacity: 1, scale: 1 },
-            viewport: { once: true }
-          } as any)}
-          className="max-w-3xl mx-auto"
-        >
-          <div className="relative bg-gradient-to-br from-slate-900 to-midnight border border-slate-800 p-12 rounded-[3rem] overflow-hidden shadow-2xl text-center group">
-            {/* Glow effect behind */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-accent/10 blur-[100px] rounded-full pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col items-center">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-lg">
-                    <Github size={40} className="text-midnight" />
+        <div className="max-w-3xl mx-auto">
+            <motion.div 
+                {...({
+                  initial: { opacity: 0, y: 50 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true },
+                  transition: { duration: 0.8 }
+                } as any)}
+                className="relative group"
+            >
+                {/* Glow Effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-accent to-indigo-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
+                
+                <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 md:p-12 text-center overflow-hidden">
+                    {/* Background Grid */}
+                    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                    
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="w-20 h-20 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center mb-6 shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                            <Code2 size={40} className="text-white" />
+                        </div>
+                        
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">Conçu par zay168</h2>
+                        <p className="text-slate-400 mb-8 text-lg">Développeur Créatif & Designer UI</p>
+                        
+                        <a 
+                            href="https://github.com/zay168" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-midnight rounded-xl font-bold hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all duration-300"
+                        >
+                            <Github size={20} />
+                            <span>Suivre sur GitHub</span>
+                            <ExternalLink size={16} className="opacity-50" />
+                        </a>
+                    </div>
                 </div>
-                
-                <h3 className="text-sm font-bold text-accent uppercase tracking-widest mb-2">Développé par</h3>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-8 tracking-tight">zay168</h2>
-                
-                <p className="text-slate-400 max-w-lg mx-auto mb-10 text-lg font-light">
-                    Créateur passionné d'expériences numériques minimalistes et utiles.
-                </p>
-
-                <motion.a
-                    href="https://github.com/zay168"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    {...({
-                      whileHover: { scale: 1.05 },
-                      whileTap: { scale: 0.95 }
-                    } as any)}
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-slate-800 hover:bg-white hover:text-midnight text-white border border-slate-700 rounded-2xl font-bold text-lg transition-all duration-300 shadow-lg group-hover:shadow-accent/20"
-                >
-                    <Code2 size={20} />
-                    <span>Voir le profil GitHub</span>
-                    <ExternalLink size={16} className="opacity-50" />
-                </motion.a>
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+        </div>
       </section>
-
-
-      {/* --- FINAL CTA --- */}
-      <section className="pb-32 pt-12 px-6 relative z-10 text-center">
-        <motion.div
-          {...({
-            initial: { opacity: 0, y: 20 },
-            whileInView: { opacity: 1, y: 0 },
-            viewport: { once: true }
-          } as any)}
-        >
-            <p className="text-slate-500 mb-8 text-lg">Prêt à alléger votre esprit ?</p>
-           <button 
-            onClick={onEnter}
-            className="px-16 py-6 bg-accent hover:bg-white text-midnight rounded-2xl font-bold text-xl transition-all duration-300 shadow-[0_0_50px_-10px_rgba(167,139,250,0.4)] hover:shadow-[0_0_80px_-10px_rgba(167,139,250,0.6)] hover:-translate-y-1 ring-4 ring-accent/20"
-          >
-            Entrer dans LUCID
-          </button>
-        </motion.div>
-      </section>
-
 
       {/* --- FOOTER --- */}
-      <footer className="py-8 border-t border-slate-900 relative z-10 bg-midnight/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
-            <BrainCircuit size={16} />
-            <span className="font-bold tracking-widest uppercase text-xs">LUCID App v1.0</span>
-          </div>
-          
-          <a 
-            href="https://github.com/zay168" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-xs font-medium tracking-wide text-slate-500 hover:text-accent transition-colors flex items-center gap-1"
-          >
-            <span>Code & Design par</span>
-            <span className="text-slate-300 font-bold">@zay168</span>
-          </a>
-        </div>
+      <footer className="py-12 text-center text-slate-600 text-sm relative z-10 border-t border-slate-900">
+        <p className="mb-2">Code & Design par <span className="text-slate-400 font-medium">@zay168</span></p>
+        <p>LUCID © Tous droits réservés.</p>
       </footer>
 
     </div>

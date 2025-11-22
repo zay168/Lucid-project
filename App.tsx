@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Capture } from './components/Capture';
 import { Archive } from './components/Archive';
@@ -154,8 +154,7 @@ export default function App() {
   return (
     <div className="relative w-full min-h-[100dvh] bg-midnight text-slate-200 overflow-hidden font-sans selection:bg-accent selection:text-midnight">
       
-      {/* Cinematic Grain Overlay */}
-      <div className="cinematic-noise" />
+      {/* No global cinematic-noise here anymore, it is specific to sections */}
 
       {/* 1. LANDING PAGE */}
       <AnimatePresence mode="wait">
