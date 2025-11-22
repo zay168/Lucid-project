@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Capture } from './components/Capture';
 import { Archive } from './components/Archive';
@@ -179,7 +179,6 @@ export default function App() {
                       <Settings 
                           currentName={userName}
                           onUpdateName={handleUpdateName}
-                          onBack={() => setView('dashboard')}
                           onReset={handleResetData}
                       />
                   )}
