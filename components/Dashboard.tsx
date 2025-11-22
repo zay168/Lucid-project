@@ -69,12 +69,23 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
         <motion.div 
           {...({
             initial: { opacity: 0, scale: 0.8 },
-            animate: { opacity: 1, scale: 1 },
-            transition: { duration: 0.8, ease: "easeOut" }
+            animate: { 
+              opacity: 1, 
+              scale: [1, 1.05, 1], // Breathing animation
+            },
+            transition: { 
+              duration: 0.8, 
+              ease: "easeOut",
+              scale: {
+                duration: 4, // Slow breathing
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }
           } as any)}
           className="relative"
         >
-          <span className="text-[8rem] md:text-[10rem] font-thin leading-none text-accent tracking-tighter tabular-nums">
+          <span className="text-[8rem] md:text-[10rem] font-thin leading-none text-accent tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)]">
             {totalResolved === 0 ? "--" : `${rate}%`}
           </span>
         </motion.div>
