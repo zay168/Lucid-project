@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Trash2, Shield } from 'lucide-react';
+import { Trash2, Save, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface SettingsProps {
@@ -10,7 +10,7 @@ interface SettingsProps {
   onReset: () => void;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onReset }) => {
+export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onBack, onReset }) => {
   const [name, setName] = useState(currentName);
   const [confirmReset, setConfirmReset] = useState(false);
 

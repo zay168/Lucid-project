@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { Capture } from './components/Capture';
 import { Archive } from './components/Archive';
