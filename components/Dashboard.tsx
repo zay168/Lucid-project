@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Worry } from '../types';
 import { motion } from 'framer-motion';
 
@@ -149,22 +149,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
             {totalResolved === 0 ? "--" : `${rate}%`}
           </span>
         </motion.div>
-        
-        {/* Trend Indicator */}
-        {totalResolved > 0 && (
-             <motion.div
-                {...({
-                    initial: { opacity: 0, y: -10 },
-                    animate: { opacity: 1, y: 0 },
-                    transition: { delay: 0.5 }
-                } as any)}
-                className={`absolute -right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center gap-1 opacity-50`}
-             >
-                {trend === 'up' && <TrendingUp size={24} className="text-emerald-400" />}
-                {trend === 'down' && <TrendingDown size={24} className="text-slate-500" />}
-                {trend === 'equal' && <Minus size={24} className="text-slate-600" />}
-             </motion.div>
-        )}
         
         <motion.p 
           {...({
