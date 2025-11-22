@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { Worry } from '../types';
 import { motion } from 'framer-motion';
 
@@ -19,116 +19,152 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
-  const { rate, totalResolved, phrase } = useMemo(() => {
+  const { rate, totalResolved, phrase, trend } = useMemo(() => {
+    // 1. Filtrer les angoisses résolues
     const resolved = worries.filter((w) => w.status !== 'pending');
     const total = resolved.length;
     const n = userName ? formatName(userName) : "";
     const hasName = n.length > 0;
     
+    // Cas Zéro : Pas encore de données
     if (total === 0) {
       return { 
         rate: 0, 
         totalResolved: 0, 
         phrase: hasName 
             ? `Bonjour ${n}. Dépose une première pensée pour commencer.`
-            : "Commence par déposer une angoisse pour construire ta lucidité." 
+            : "Commence par déposer une angoisse pour construire ta lucidité.",
+        trend: 'neutral'
       };
     }
 
-    const notHappened = resolved.filter((w) => w.status === 'did_not_happen').length;
-    const calculatedRate = Math.round((notHappened / total) * 100);
+    // 2. Calcul du Taux Actuel
+    const successCount = resolved.filter((w) => w.status === 'did_not_happen').length;
+    const currentRate = Math.round((successCount / total) * 100);
+
+    // 3. Algorithme de Tendance (Trend Detection)
+    // On simule le taux précédent en retirant l'élément le plus récent (basé sur checkDate)
+    // Cela nous permet de savoir si la dernière action a fait monter ou descendre le score.
+    let trend: 'up' | 'down' | 'equal' = 'equal';
+    
+    if (total > 1) {
+        // On trie par date de vérification pour trouver le "dernier" événement
+        const sortedByDate = [...resolved].sort((a, b) => b.checkDate - a.checkDate);
+        const latestWorry = sortedByDate[0];
+        
+        // On recalcule le score sans ce dernier élément
+        const prevTotal = total - 1;
+        const prevSuccess = latestWorry.status === 'did_not_happen' ? successCount - 1 : successCount;
+        const prevRate = Math.round((prevSuccess / prevTotal) * 100);
+
+        if (currentRate > prevRate) trend = 'up';
+        else if (currentRate < prevRate) trend = 'down';
+    } else {
+        // S'il n'y a qu'un seul élément, la tendance dépend de sa réussite
+        trend = currentRate === 100 ? 'up' : 'down';
+    }
 
     let text = "";
+
+    // --- LOGIQUE DE SÉLECTION DE PHRASE ---
     
-    // Phrases plus riches et personnalisées par paliers
-    if (calculatedRate === 100) {
-        const phrases = [
+    // CAS 1 : PERFECTION (100%)
+    if (currentRate === 100) {
+         const phrases = [
             hasName ? `Incroyable ${n}. Aucune peur ne s'est réalisée.` : "Incroyable. Aucune peur ne s'est réalisée.",
             "La réalité est ton terrain de jeu, pas tes angoisses.",
-            hasName ? `Tu es invincible, ${n}. 100% de lucidité.` : "Une lucidité totale. Tu es invincible.",
             "Ton esprit est une forteresse imprenable.",
             "Regarde ça. L'anxiété n'a aucune prise sur toi."
         ];
         text = phrases[total % phrases.length];
-    } else if (calculatedRate >= 90) {
+    } 
+    
+    // CAS 2 : CHUTE DU SCORE (Trend Down) - C'est ici qu'on gère l'empathie
+    else if (trend === 'down') {
         const phrases = [
-            hasName ? `Presque parfait, ${n}. Tu vois clair.` : "Presque parfait. Tu vois clair maintenant.",
-            "Tes peurs sont des fantômes. Tu les traverses sans mal.",
-            "Une lucidité impressionnante. Continue.",
-            hasName ? `${n}, tu es la preuve que la peur ment.` : "Tu es la preuve que la peur ment.",
-            "La sérénité n'est plus très loin."
+            hasName ? `La guérison n'est pas linéaire, ${n}.` : "La guérison n'est pas linéaire. Ce n'est qu'un chiffre.",
+            "Ce recul est temporaire. Ne te juge pas sévèrement.",
+            "C'est un rappel : la réalité gagne souvent, mais pas toujours.",
+            hasName ? `Accepte l'incertitude, ${n}.` : "Accepte l'incertitude. Respire et continue.",
+            "Une bataille perdue ne signifie pas que la guerre est finie.",
+            "C'est normal de trébucher. Ton taux de lucidité reste solide."
         ];
+        // On force une rotation basée sur le total pour varier
         text = phrases[total % phrases.length];
-    } else if (calculatedRate >= 80) {
+    }
+
+    // CAS 3 : PROGRESSION (Trend Up) - Renforcement positif
+    else if (trend === 'up') {
         const phrases = [
-            hasName ? `C'est excellent, ${n}.` : "C'est un excellent score.",
-            "Tu apprends à distinguer le bruit du signal.",
-            "La grande majorité de tes craintes étaient fausses.",
-            "Tu gagnes du terrain chaque jour. Bravo.",
-            hasName ? `Ta vision s'éclaircit, ${n}.` : "Ta vision s'éclaircit de jour en jour."
-        ];
-        text = phrases[total % phrases.length];
-    } else if (calculatedRate >= 60) {
-        const phrases = [
-            hasName ? `Tu es sur la bonne voie, ${n}.` : "Tu es sur la bonne voie.",
-            "Plus d'une fois sur deux, ton angoisse se trompe.",
-            "Tu reprends le contrôle, doucement mais sûrement.",
-            "Respire. Les faits sont plus rassurants que tes pensées.",
-            hasName ? `Crois en ce chiffre, ${n}.` : "Crois en ce chiffre, pas en tes doutes."
-        ];
-        text = phrases[total % phrases.length];
-    } else if (calculatedRate >= 40) {
-        const phrases = [
-            "C'est un combat, et tu es en train de l'apprendre.",
-            hasName ? `Ne lâche rien ${n}.` : "Ne lâche rien. La lucidité est un muscle.",
-            "Observe simplement. Tes peurs ont tort la moitié du temps.",
-            "L'équilibre est fragile, mais tu es debout.",
-            "Chaque vérification te rend plus fort(e)."
-        ];
-        text = phrases[total % phrases.length];
-    } else {
-        const phrases = [
-            hasName ? `Courage ${n}. Tu es toujours là.` : "Courage. Tu es toujours là.",
-            "Ce chiffre n'est qu'un début. Ne te juge pas.",
-            "L'important est d'affronter la réalité.",
-            "Même si tes peurs arrivent, tu as la force de gérer.",
-            hasName ? `Doucement, ${n}. Un pas après l'autre.` : "Doucement. Un pas après l'autre.",
-            "L'anxiété rend les choses pires qu'elles ne le sont."
+            hasName ? `Tu reprends le dessus, ${n}.` : "Tu reprends le dessus. C'est visible.",
+            "Ta perception s'affine. Tu distingues le bruit du signal.",
+            "Tu es en train de reprogrammer ton cerveau.",
+            "Regarde ce chiffre monter. C'est ta victoire.",
+            hasName ? `Bravo ${n}. Tu construis ta preuve.` : "Bravo. Tu construis ta preuve."
         ];
         text = phrases[total % phrases.length];
     }
 
-    return { rate: calculatedRate, totalResolved: total, phrase: text };
+    // CAS 4 : STABILITÉ (Trend Equal) - Messages de maintenance par paliers
+    else {
+        if (currentRate >= 80) {
+            text = hasName ? `Tu maintiens le cap, ${n}.` : "Tu maintiens le cap. Excellent.";
+        } else if (currentRate >= 50) {
+            text = "L'équilibre est là. Continue d'observer.";
+        } else {
+            text = hasName ? `Patience, ${n}. Ça va venir.` : "Patience. La lucidité est un muscle.";
+        }
+    }
+
+    return { rate: currentRate, totalResolved: total, phrase: text, trend };
   }, [worries, userName]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 relative">
       
       {/* The Big Number */}
-      <div className="flex flex-col items-center justify-center mb-12">
+      <div className="flex flex-col items-center justify-center mb-12 relative">
         <motion.div 
           {...({
             initial: { opacity: 0, scale: 0.8 },
             animate: { 
               opacity: 1, 
-              scale: [1, 1.05, 1], // Breathing animation
+              scale: [1, 1.05, 1], 
             },
             transition: { 
               duration: 0.8, 
               ease: "easeOut",
               scale: {
-                duration: 4, // Slow breathing
+                duration: 4, 
                 repeat: Infinity,
                 ease: "easeInOut"
               }
             }
           } as any)}
-          className="relative"
+          className="relative z-10"
         >
-          <span className="text-[8rem] md:text-[10rem] font-thin leading-none text-accent tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)]">
+          <span className={`text-[8rem] md:text-[10rem] font-thin leading-none tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)] ${
+            trend === 'down' ? 'text-slate-200' : 'text-accent'
+          }`}>
             {totalResolved === 0 ? "--" : `${rate}%`}
           </span>
         </motion.div>
+        
+        {/* Trend Indicator */}
+        {totalResolved > 0 && (
+             <motion.div
+                {...({
+                    initial: { opacity: 0, y: -10 },
+                    animate: { opacity: 1, y: 0 },
+                    transition: { delay: 0.5 }
+                } as any)}
+                className={`absolute -right-4 top-1/2 transform -translate-y-1/2 flex flex-col items-center gap-1 opacity-50`}
+             >
+                {trend === 'up' && <TrendingUp size={24} className="text-emerald-400" />}
+                {trend === 'down' && <TrendingDown size={24} className="text-slate-500" />}
+                {trend === 'equal' && <Minus size={24} className="text-slate-600" />}
+             </motion.div>
+        )}
         
         <motion.p 
           {...({
