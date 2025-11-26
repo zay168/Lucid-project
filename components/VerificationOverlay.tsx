@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Worry } from '../types';
@@ -6,12 +5,6 @@ import { Check, X } from 'lucide-react';
 
 interface VerificationOverlayProps {
   worry: Worry;
-<<<<<<< HEAD
-  onResolve: (worryId: string, status: 'happened' | 'did_not_happen') => void;
-}
-
-export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry, onResolve }) => {
-=======
   onResolve: (worryId: string, status: 'happened' | 'did_not_happen', reflection?: string) => void;
 }
 
@@ -25,7 +18,6 @@ export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry,
     }
   };
 
->>>>>>> e4bc5e8 (big maj)
   return (
     <div className="fixed inset-0 z-[100] bg-midnight/95 backdrop-blur-md flex flex-col items-center justify-center p-6">
       <motion.div
@@ -39,11 +31,7 @@ export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry,
           Reality Check
         </span>
 
-<<<<<<< HEAD
-        <div className="bg-surface border border-slate-800 p-8 rounded-2xl mb-12 shadow-2xl">
-=======
         <div className="bg-surface border border-slate-800 p-8 rounded-2xl mb-8 shadow-2xl">
->>>>>>> e4bc5e8 (big maj)
           <p className="text-slate-500 text-sm mb-2 italic">
             Le {new Date(worry.createdAt).toLocaleDateString('fr-FR')}, vous aviez peur de ceci :
           </p>
@@ -52,33 +40,6 @@ export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry,
           </h3>
         </div>
 
-<<<<<<< HEAD
-        <p className="text-center text-white text-lg mb-8 font-medium">
-          Est-ce que c'est vraiment arrivé ?
-        </p>
-
-        <div className="flex gap-4 justify-center">
-          <button
-            onClick={() => onResolve(worry.id, 'did_not_happen')}
-            className="flex-1 bg-emerald-500/10 border border-emerald-500/50 hover:bg-emerald-500/20 text-emerald-400 py-4 rounded-xl flex items-center justify-center gap-2 transition-all group"
-          >
-            <X size={20} className="group-hover:scale-110 transition-transform" />
-            <span className="font-bold">NON</span>
-          </button>
-
-          <button
-            onClick={() => onResolve(worry.id, 'happened')}
-            className="flex-1 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 py-4 rounded-xl flex items-center justify-center gap-2 transition-all"
-          >
-            <Check size={20} />
-            <span className="font-medium">OUI</span>
-          </button>
-        </div>
-        
-        <p className="text-center text-slate-600 text-xs mt-6">
-          Soyez honnête pour un score précis.
-        </p>
-=======
         {!outcome ? (
           <>
             <p className="text-center text-white text-lg mb-8 font-medium">
@@ -143,7 +104,6 @@ export const VerificationOverlay: React.FC<VerificationOverlayProps> = ({ worry,
             Soyez honnête pour un score précis.
           </p>
         )}
->>>>>>> e4bc5e8 (big maj)
       </motion.div>
     </div>
   );

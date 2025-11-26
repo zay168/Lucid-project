@@ -2,12 +2,8 @@
 export default {
   content: [
     "./index.html",
-<<<<<<< HEAD
-    "./**/*.{js,ts,jsx,tsx}",
-=======
     "./*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
->>>>>>> e4bc5e8 (big maj)
   ],
   theme: {
     extend: {
