@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, memo, useCallback } from 'react';
 import { Worry, Category } from '../types';
 import { CheckCircle2, XCircle, Lock, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,21 +18,27 @@ interface ArchiveProps {
   onVerify: (worry: Worry) => void;
 }
 
-// Sub-component for individual item logic (Long Press)
-const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVerify: (worry: Worry) => void; index: number }> = ({ worry, onDelete, onVerify, index }) => {
+interface ArchiveItemProps {
+  worry: Worry;
+  onDelete: (id: string) => void;
+  onVerify: (worry: Worry) => void;
+  index: number;
+}
+
+// ✨ MEMOIZED - Sub-component for individual item logic (Long Press)
+const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }) => {
   const [isPressing, setIsPressing] = useState(false);
-  const [pressProgress, setPressProgress] = useState(0); // 0 to 100
+  const [pressProgress, setPressProgress] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const LONG_PRESS_DURATION = 12000; // 12 seconds
+  const LONG_PRESS_DURATION = 12000;
   const PROGRESS_UPDATE_INTERVAL = 50;
 
-  const startPress = () => {
+  const startPress = useCallback(() => {
     setIsPressing(true);
     setPressProgress(0);
 
-    // Start progress visual
     const startTime = Date.now();
     progressIntervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -40,17 +46,14 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
       setPressProgress(progress);
     }, PROGRESS_UPDATE_INTERVAL);
 
-    // Schedule deletion
     timerRef.current = setTimeout(() => {
       onDelete(worry.id);
-      // Reset (in case component doesn't unmount immediately)
       cancelPress();
-      // Vibrate if supported
       if (navigator.vibrate) navigator.vibrate(200);
     }, LONG_PRESS_DURATION);
-  };
+  }, [onDelete, worry.id]);
 
-  const cancelPress = () => {
+  const cancelPress = useCallback(() => {
     setIsPressing(false);
     setPressProgress(0);
     if (timerRef.current) {
@@ -61,24 +64,28 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
       clearInterval(progressIntervalRef.current);
       progressIntervalRef.current = null;
     }
-  };
+  }, []);
 
   const isPositive = worry.status === 'did_not_happen';
   const isPending = worry.status === 'pending';
   const isOverdue = isPending && worry.checkDate <= Date.now();
+
+  const handleVerify = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onVerify(worry);
+  }, [onVerify, worry]);
 
   return (
     <motion.li
       {...({
         initial: { opacity: 0, y: 10 },
         animate: { opacity: 1, y: 0 },
-        transition: { delay: index * 0.05 }
+        transition: { delay: Math.min(index * 0.05, 0.3) } // Cap delay for long lists
       } as any)}
-      // Pointer events for long press
       onPointerDown={startPress}
       onPointerUp={cancelPress}
       onPointerLeave={cancelPress}
-      onContextMenu={(e) => e.preventDefault()} // Prevent context menu on mobile
+      onContextMenu={(e) => e.preventDefault()}
       className={`relative p-4 rounded-xl border transition-all select-none overflow-hidden touch-none ${isPending
         ? 'bg-surface border-slate-800 opacity-100'
         : isPositive
@@ -86,7 +93,6 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
           : 'bg-surface/50 border-red-900/20 opacity-80'
         } ${isPressing ? 'scale-[0.98]' : 'scale-100'}`}
     >
-      {/* Progress Bar Background for Deletion */}
       <AnimatePresence>
         {isPressing && (
           <motion.div
@@ -101,7 +107,6 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
         )}
       </AnimatePresence>
 
-      {/* Deletion Warning Overlay (subtle) */}
       {isPressing && pressProgress > 20 && (
         <div className="absolute inset-0 bg-red-900/10 z-0 flex items-center justify-end px-4">
           <Trash2 className="text-red-500/50" size={20} />
@@ -124,7 +129,7 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
                 {new Date(worry.createdAt).toLocaleDateString('fr-FR')}
               </span>
               {worry.category && (
-                <span className={`text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700`}>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
                   {CATEGORIES.find(c => c.id === worry.category)?.label || worry.category}
                 </span>
               )}
@@ -132,10 +137,7 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
 
             {isPending ? (
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onVerify(worry);
-                }}
+                onClick={handleVerify}
                 className={`text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full transition-colors ${isOverdue
                   ? 'bg-accent text-midnight hover:bg-white animate-pulse'
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
@@ -153,18 +155,28 @@ const ArchiveItem: React.FC<{ worry: Worry; onDelete: (id: string) => void; onVe
       </div>
     </motion.li>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison for better performance
+  return prevProps.worry.id === nextProps.worry.id &&
+    prevProps.worry.status === nextProps.worry.status &&
+    prevProps.worry.checkDate === nextProps.worry.checkDate &&
+    prevProps.index === nextProps.index;
+});
 
-export const Archive: React.FC<ArchiveProps> = ({ worries, onDelete, onVerify }) => {
+ArchiveItem.displayName = 'ArchiveItem';
+
+// ✨ MEMOIZED - Main Archive component
+export const Archive = memo<ArchiveProps>(({ worries, onDelete, onVerify }) => {
   const [filter, setFilter] = useState<Category | 'all'>('all');
 
-  // Sort by creation date descending
+  // ✨ OPTIMIZED - useMemo for filtered and sorted worries
   const sortedWorries = useMemo(() => {
     return [...worries]
       .filter(w => filter === 'all' || w.category === filter)
       .sort((a, b) => b.createdAt - a.createdAt);
   }, [worries, filter]);
 
+  // ✨ OPTIMIZED - useMemo for stats calculation
   const stats = useMemo(() => {
     const resolved = worries.filter(w => w.status !== 'pending');
     return {
@@ -174,9 +186,12 @@ export const Archive: React.FC<ArchiveProps> = ({ worries, onDelete, onVerify })
     };
   }, [worries]);
 
+  const handleFilterChange = useCallback((newFilter: Category | 'all') => {
+    setFilter(newFilter);
+  }, []);
+
   return (
     <div className="h-full overflow-y-auto pb-24 px-6 pt-6">
-      {/* Container centré pour desktop */}
       <div className="max-w-4xl mx-auto w-full">
         <h2 className="text-xl font-light text-white mb-6 tracking-wide">
           Archives
@@ -187,7 +202,7 @@ export const Archive: React.FC<ArchiveProps> = ({ worries, onDelete, onVerify })
           {CATEGORIES.map(cat => (
             <button
               key={cat.id}
-              onClick={() => setFilter(cat.id as any)}
+              onClick={() => handleFilterChange(cat.id as any)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border whitespace-nowrap ${filter === cat.id
                 ? 'bg-white text-midnight border-white'
                 : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500'
@@ -230,13 +245,22 @@ export const Archive: React.FC<ArchiveProps> = ({ worries, onDelete, onVerify })
             <p className="text-sm">Aucune archive pour le moment.</p>
           </div>
         ) : (
+          // ✨ OPTIMIZED - Memoized list
           <ul className="space-y-4">
             {sortedWorries.map((worry, index) => (
-              <ArchiveItem key={worry.id} worry={worry} onDelete={onDelete} onVerify={onVerify} index={index} />
+              <ArchiveItem
+                key={worry.id}
+                worry={worry}
+                onDelete={onDelete}
+                onVerify={onVerify}
+                index={index}
+              />
             ))}
           </ul>
         )}
       </div>
     </div>
   );
-};
+});
+
+Archive.displayName = 'Archive';

@@ -1,20 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback, useMemo } from 'react';
 import { Dashboard } from './components/Dashboard';
-import { Capture } from './components/Capture';
-import { Archive } from './components/Archive';
 import { Header } from './components/Header';
-import { VerificationOverlay } from './components/VerificationOverlay';
-import { Onboarding } from './components/Onboarding';
-import { Settings } from './components/Settings';
-import { Landing } from './components/Landing';
 import { Worry, ViewState, Category } from './types';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Soundscapes } from './components/Soundscapes';
-import { NotificationToast } from './components/NotificationToast';
+import { debouncedSaveToStorage, loadFromStorage, saveToStorage, flushPendingSaves } from './utils/storage';
+
+// ✨ LAZY LOADING - Charge les composants uniquement quand nécessaire
+const Capture = lazy(() => import('./components/Capture').then(module => ({ default: module.Capture })));
+const Archive = lazy(() => import('./components/Archive').then(module => ({ default: module.Archive })));
+const Settings = lazy(() => import('./components/Settings').then(module => ({ default: module.Settings })));
+const Landing = lazy(() => import('./components/Landing').then(module => ({ default: module.Landing })));
+const Onboarding = lazy(() => import('./components/Onboarding').then(module => ({ default: module.Onboarding })));
+const VerificationOverlay = lazy(() => import('./components/VerificationOverlay').then(module => ({ default: module.VerificationOverlay })));
+const Soundscapes = lazy(() => import('./components/Soundscapes').then(module => ({ default: module.Soundscapes })));
+const NotificationToast = lazy(() => import('./components/NotificationToast').then(module => ({ default: module.NotificationToast })));
 
 const STORAGE_KEY = 'lucid_worries_v1';
 const ONBOARDING_KEY = 'lucid_onboarding_completed';
 const NAME_KEY = 'lucid_user_name';
+
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center h-full bg-midnight">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-slate-400 text-sm animate-pulse">Chargement...</p>
+    </div>
+  </div>
+);
 
 export default function App() {
   // --- STATE ---
@@ -31,79 +44,79 @@ export default function App() {
   // --- LOAD DATA ---
   useEffect(() => {
     const loadData = () => {
-      // 1. Load Worries
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        try {
-          setWorries(JSON.parse(saved));
-        } catch (e) {
-          console.error("Corrupt data", e);
-        }
-      }
+      // Load with error handling and fallbacks
+      const loadedWorries = loadFromStorage<Worry[]>(STORAGE_KEY, []);
+      const loadedName = loadFromStorage<string>(NAME_KEY, '');
+      const onboardingDone = localStorage.getItem(ONBOARDING_KEY) === 'true';
 
-      // 2. Load User Profile
-      const savedName = localStorage.getItem(NAME_KEY);
-      if (savedName) setUserName(savedName);
-
-      // 3. Check Onboarding Status (only if not explicitly showing Landing first)
-      const onboardingDone = localStorage.getItem(ONBOARDING_KEY);
-      if (onboardingDone === 'true') {
-        setShowOnboarding(false);
-      }
+      setWorries(loadedWorries);
+      setUserName(loadedName);
+      setShowOnboarding(!onboardingDone);
     };
 
     loadData();
+
+    // Flush pending saves before page unload
+    const handleBeforeUnload = () => {
+      flushPendingSaves();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, []);
 
-  // --- CHECK FOR DUE WORRIES ---
+  // ✨ OPTIMISATION - Pré-calculer les worries dues avec useMemo
+  const dueWorries = useMemo(() => {
+    if (showLanding || showOnboarding) return [];
+
+    const now = Date.now();
+    return worries.filter(w =>
+      w.status === 'pending' &&
+      w.checkDate &&
+      !isNaN(Number(w.checkDate)) &&
+      w.checkDate <= now
+    );
+  }, [worries, showLanding, showOnboarding]);
+
+  // --- CHECK FOR DUE WORRIES (Optimisé) ---
   useEffect(() => {
-    if (showLanding || showOnboarding) return;
+    if (dueWorries.length === 0) return;
 
     const checkDueWorries = () => {
-      const now = Date.now();
-      // Find the first pending worry that is due and hasn't been shown this session?
-      // Simple version: Find first due pending worry
-      const due = worries.find(w => w.status === 'pending' && w.checkDate && !isNaN(Number(w.checkDate)) && w.checkDate <= now);
-
-      if (due) {
-        // Only show if we aren't already showing one or in capture mode
-        if (!activeOverlayWorry && !dueNotificationWorry && view !== 'capture') {
-          setDueNotificationWorry(due);
-        }
+      if (!activeOverlayWorry && !dueNotificationWorry && view !== 'capture') {
+        setDueNotificationWorry(dueWorries[0]);
       }
     };
 
-    // Check every 10 seconds and on mount/update
     checkDueWorries();
     const interval = setInterval(checkDueWorries, 10000);
     return () => clearInterval(interval);
-  }, [worries, showLanding, showOnboarding, view, activeOverlayWorry]);
+  }, [dueWorries, activeOverlayWorry, dueNotificationWorry, view]);
 
+  // --- ACTIONS (Optimisés avec useCallback) ---
 
-  // --- ACTIONS ---
-
-  const handleEnterApp = () => {
+  const handleEnterApp = useCallback(() => {
     const onboardingDone = localStorage.getItem(ONBOARDING_KEY);
     setShowLanding(false);
 
     if (onboardingDone !== 'true') {
       setShowOnboarding(true);
     }
-  };
+  }, []);
 
-  const handleOnboardingComplete = (name: string) => {
-    localStorage.setItem(ONBOARDING_KEY, 'true');
-    localStorage.setItem(NAME_KEY, name);
+  const handleOnboardingComplete = useCallback((name: string) => {
+    saveToStorage(ONBOARDING_KEY, 'true'); // Immediate save for critical data
+    saveToStorage(NAME_KEY, name);
     setUserName(name);
     setShowOnboarding(false);
-  };
+  }, []);
 
-  const handleUpdateName = (name: string) => {
-    localStorage.setItem(NAME_KEY, name);
+  const handleUpdateName = useCallback((name: string) => {
+    saveToStorage(NAME_KEY, name);
     setUserName(name);
-  };
+  }, []);
 
-  const handleSaveWorry = (
+  const handleSaveWorry = useCallback((
     text: string,
     checkDate: number,
     category?: Category,
@@ -119,82 +132,95 @@ export default function App() {
       reframing
     };
 
-    const updated = [newWorry, ...worries];
-    setWorries(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    setWorries(prev => {
+      const updated = [newWorry, ...prev];
+      debouncedSaveToStorage(STORAGE_KEY, updated); // Debounced save
+      return updated;
+    });
     setView('dashboard');
-  };
+  }, []);
 
-  const handleResolveWorry = (id: string, status: 'happened' | 'did_not_happen', reflection?: string) => {
-    const updated = worries.map(w =>
-      w.id === id ? { ...w, status, reflection } : w
-    );
-    setWorries(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  const handleResolveWorry = useCallback((id: string, status: 'happened' | 'did_not_happen', reflection?: string) => {
+    setWorries(prev => {
+      const updated = prev.map(w =>
+        w.id === id ? { ...w, status, reflection } : w
+      );
+      debouncedSaveToStorage(STORAGE_KEY, updated);
+      return updated;
+    });
     setActiveOverlayWorry(null);
-  };
+  }, []);
 
-  const handleDeleteWorry = (id: string) => {
-    const updated = worries.filter(w => w.id !== id);
-    setWorries(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  };
+  const handleDeleteWorry = useCallback((id: string) => {
+    setWorries(prev => {
+      const updated = prev.filter(w => w.id !== id);
+      debouncedSaveToStorage(STORAGE_KEY, updated);
+      return updated;
+    });
+  }, []);
 
-  const handleResetAll = () => {
+  const handleResetAll = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(ONBOARDING_KEY);
     localStorage.removeItem(NAME_KEY);
     setWorries([]);
     setUserName('');
-    setShowOnboarding(true); // Restart onboarding
+    setShowOnboarding(true);
     setView('dashboard');
-  };
+  }, []);
 
-  const handleImportData = (data: Worry[]) => {
+  const handleImportData = useCallback((data: Worry[]) => {
     setWorries(data);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  };
+    saveToStorage(STORAGE_KEY, data); // Immediate save for import
+  }, []);
 
-  // --- RENDER HELPERS ---
+  // ✨ OPTIMISATION - Réduction animations sur appareils faibles
+  const prefersReducedMotion = useMemo(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    , []);
 
-  // Cinematic Transitions
-  const pageTransition = {
-    initial: { opacity: 0, scale: 0.95, filter: 'blur(10px)' },
-    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-    exit: { opacity: 0, scale: 1.05, filter: 'blur(10px)' },
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
-  };
+  const pageTransition = useMemo(() => prefersReducedMotion
+    ? { initial: {}, animate: {}, exit: {}, transition: {} }
+    : {
+      initial: { opacity: 0, scale: 0.95, filter: 'blur(10px)' },
+      animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+      exit: { opacity: 0, scale: 1.05, filter: 'blur(10px)' },
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+    }
+    , [prefersReducedMotion]);
 
   return (
     <div className="relative w-full min-h-[100dvh] bg-midnight text-slate-200 overflow-hidden font-sans selection:bg-accent selection:text-midnight">
 
-      {/* No global cinematic-noise here anymore, it is specific to sections */}
-
       {/* 1. LANDING PAGE */}
       <AnimatePresence mode="wait">
         {showLanding && (
-          <motion.div
-            key="landing"
-            className="absolute inset-0 z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8 } }}
-          >
-            <Landing onEnter={handleEnterApp} />
-          </motion.div>
+          <Suspense fallback={<LoadingFallback />}>
+            <motion.div
+              key="landing"
+              className="absolute inset-0 z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.8 } }}
+            >
+              <Landing onEnter={handleEnterApp} />
+            </motion.div>
+          </Suspense>
         )}
       </AnimatePresence>
 
       {/* 2. ONBOARDING */}
       <AnimatePresence mode="wait">
         {!showLanding && showOnboarding && (
-          <motion.div
-            key="onboarding"
-            className="absolute inset-0 z-40"
-            {...pageTransition}
-          >
-            <Onboarding onComplete={handleOnboardingComplete} />
-          </motion.div>
+          <Suspense fallback={<LoadingFallback />}>
+            <motion.div
+              key="onboarding"
+              className="absolute inset-0 z-40"
+              {...pageTransition}
+            >
+              <Onboarding onComplete={handleOnboardingComplete} />
+            </motion.div>
+          </Suspense>
         )}
       </AnimatePresence>
 
@@ -210,7 +236,7 @@ export default function App() {
               {view === 'dashboard' && (
                 <motion.div
                   key="dashboard"
-                  className="absolute inset-0 pt-24" // pt-24 for header space
+                  className="absolute inset-0 pt-24"
                   {...pageTransition}
                 >
                   <Dashboard
@@ -223,46 +249,51 @@ export default function App() {
               )}
 
               {view === 'archive' && (
-                <motion.div
-                  key="archive"
-                  className="absolute inset-0 pt-24"
-                  {...pageTransition}
-                >
-                  <Archive worries={worries} onDelete={handleDeleteWorry} onVerify={setActiveOverlayWorry} />
-                </motion.div>
+                <Suspense fallback={<LoadingFallback />}>
+                  <motion.div
+                    key="archive"
+                    className="absolute inset-0 pt-24"
+                    {...pageTransition}
+                  >
+                    <Archive worries={worries} onDelete={handleDeleteWorry} onVerify={setActiveOverlayWorry} />
+                  </motion.div>
+                </Suspense>
               )}
 
               {view === 'settings' && (
-                <motion.div
-                  key="settings"
-                  className="absolute inset-0 pt-24"
-                  {...pageTransition}
-                >
-                  <Settings
-                    currentName={userName}
-                    onUpdateName={handleUpdateName}
-                    onReset={handleResetAll}
-                    worries={worries}
-                    onImport={handleImportData}
-                  />
-                </motion.div>
+                <Suspense fallback={<LoadingFallback />}>
+                  <motion.div
+                    key="settings"
+                    className="absolute inset-0 pt-24"
+                    {...pageTransition}
+                  >
+                    <Settings
+                      currentName={userName}
+                      onUpdateName={handleUpdateName}
+                      onReset={handleResetAll}
+                      worries={worries}
+                      onImport={handleImportData}
+                    />
+                  </motion.div>
+                </Suspense>
               )}
 
-              {/* Capture Overlay (Full Screen Modal style) */}
               {view === 'capture' && (
-                <motion.div
-                  key="capture"
-                  className="absolute inset-0 z-50"
-                  initial={{ opacity: 0, y: '100%' }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: '100%' }}
-                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                >
-                  <Capture
-                    onClose={() => setView('dashboard')}
-                    onSave={handleSaveWorry}
-                  />
-                </motion.div>
+                <Suspense fallback={<LoadingFallback />}>
+                  <motion.div
+                    key="capture"
+                    className="absolute inset-0 z-50"
+                    initial={{ opacity: 0, y: '100%' }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: '100%' }}
+                    transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  >
+                    <Capture
+                      onClose={() => setView('dashboard')}
+                      onSave={handleSaveWorry}
+                    />
+                  </motion.div>
+                </Suspense>
               )}
 
             </AnimatePresence>
@@ -271,31 +302,37 @@ export default function App() {
           {/* Reality Check Overlay */}
           <AnimatePresence>
             {activeOverlayWorry && (
-              <VerificationOverlay
-                worry={activeOverlayWorry}
-                onResolve={handleResolveWorry}
-              />
+              <Suspense fallback={null}>
+                <VerificationOverlay
+                  worry={activeOverlayWorry}
+                  onResolve={handleResolveWorry}
+                />
+              </Suspense>
             )}
           </AnimatePresence>
 
           {/* Notification Toast for Due Worries */}
           <AnimatePresence>
             {dueNotificationWorry && !activeOverlayWorry && (
-              <NotificationToast
-                worry={dueNotificationWorry}
-                onOpen={() => {
-                  setActiveOverlayWorry(dueNotificationWorry);
-                  setDueNotificationWorry(null);
-                }}
-                onClose={() => setDueNotificationWorry(null)}
-              />
+              <Suspense fallback={null}>
+                <NotificationToast
+                  worry={dueNotificationWorry}
+                  onOpen={() => {
+                    setActiveOverlayWorry(dueNotificationWorry);
+                    setDueNotificationWorry(null);
+                  }}
+                  onClose={() => setDueNotificationWorry(null)}
+                />
+              </Suspense>
             )}
           </AnimatePresence>
 
         </div>
       )}
 
-      <Soundscapes />
+      <Suspense fallback={null}>
+        <Soundscapes />
+      </Suspense>
     </div>
   );
 }

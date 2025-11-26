@@ -1,5 +1,4 @@
-
-import React, { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { Plus } from 'lucide-react';
 import { Worry } from '../types';
 import { motion } from 'framer-motion';
@@ -11,8 +10,9 @@ interface DashboardProps {
   userName?: string;
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userName }) => {
-  
+// ✨ MEMOIZED - Avoid re-renders when props haven't changed
+export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }) => {
+
   // Helper pour mettre la majuscule
   const formatName = (name: string) => {
     if (!name) return "";
@@ -25,15 +25,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
     const total = resolved.length;
     const n = userName ? formatName(userName) : "";
     const hasName = n.length > 0;
-    
+
     // Cas Zéro : Pas encore de données
     if (total === 0) {
-      return { 
-        rate: 0, 
-        totalResolved: 0, 
-        phrase: hasName 
-            ? `Bonjour ${n}. Dépose une première pensée pour commencer.`
-            : "Commence par déposer une angoisse pour construire ta lucidité.",
+      return {
+        rate: 0,
+        totalResolved: 0,
+        phrase: hasName
+          ? `Bonjour ${n}. Dépose une première pensée pour commencer.`
+          : "Commence par déposer une angoisse pour construire ta lucidité.",
         trend: 'neutral'
       };
     }
@@ -46,74 +46,74 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
     // On simule le taux précédent en retirant l'élément le plus récent (basé sur checkDate)
     // Cela nous permet de savoir si la dernière action a fait monter ou descendre le score.
     let trend: 'up' | 'down' | 'equal' = 'equal';
-    
-    if (total > 1) {
-        // On trie par date de vérification pour trouver le "dernier" événement
-        const sortedByDate = [...resolved].sort((a, b) => b.checkDate - a.checkDate);
-        const latestWorry = sortedByDate[0];
-        
-        // On recalcule le score sans ce dernier élément
-        const prevTotal = total - 1;
-        const prevSuccess = latestWorry.status === 'did_not_happen' ? successCount - 1 : successCount;
-        const prevRate = Math.round((prevSuccess / prevTotal) * 100);
 
-        if (currentRate > prevRate) trend = 'up';
-        else if (currentRate < prevRate) trend = 'down';
+    if (total > 1) {
+      // On trie par date de vérification pour trouver le "dernier" événement
+      const sortedByDate = [...resolved].sort((a, b) => b.checkDate - a.checkDate);
+      const latestWorry = sortedByDate[0];
+
+      // On recalcule le score sans ce dernier élément
+      const prevTotal = total - 1;
+      const prevSuccess = latestWorry.status === 'did_not_happen' ? successCount - 1 : successCount;
+      const prevRate = Math.round((prevSuccess / prevTotal) * 100);
+
+      if (currentRate > prevRate) trend = 'up';
+      else if (currentRate < prevRate) trend = 'down';
     } else {
-        // S'il n'y a qu'un seul élément, la tendance dépend de sa réussite
-        trend = currentRate === 100 ? 'up' : 'down';
+      // S'il n'y a qu'un seul élément, la tendance dépend de sa réussite
+      trend = currentRate === 100 ? 'up' : 'down';
     }
 
     let text = "";
 
     // --- LOGIQUE DE SÉLECTION DE PHRASE ---
-    
+
     // CAS 1 : PERFECTION (100%)
     if (currentRate === 100) {
-         const phrases = [
-            hasName ? `Incroyable ${n}. Aucune peur ne s'est réalisée.` : "Incroyable. Aucune peur ne s'est réalisée.",
-            "La réalité est ton terrain de jeu, pas tes angoisses.",
-            "Ton esprit est une forteresse imprenable.",
-            "Regarde ça. L'anxiété n'a aucune prise sur toi."
-        ];
-        text = phrases[total % phrases.length];
-    } 
-    
+      const phrases = [
+        hasName ? `Incroyable ${n}. Aucune peur ne s'est réalisée.` : "Incroyable. Aucune peur ne s'est réalisée.",
+        "La réalité est ton terrain de jeu, pas tes angoisses.",
+        "Ton esprit est une forteresse imprenable.",
+        "Regarde ça. L'anxiété n'a aucune prise sur toi."
+      ];
+      text = phrases[total % phrases.length];
+    }
+
     // CAS 2 : CHUTE DU SCORE (Trend Down) - C'est ici qu'on gère l'empathie
     else if (trend === 'down') {
-        const phrases = [
-            hasName ? `La guérison n'est pas linéaire, ${n}.` : "La guérison n'est pas linéaire. Ce n'est qu'un chiffre.",
-            "Ce recul est temporaire. Ne te juge pas sévèrement.",
-            "C'est un rappel : la réalité gagne souvent, mais pas toujours.",
-            hasName ? `Accepte l'incertitude, ${n}.` : "Accepte l'incertitude. Respire et continue.",
-            "Une bataille perdue ne signifie pas que la guerre est finie.",
-            "C'est normal de trébucher. Ton taux de lucidité reste solide."
-        ];
-        // On force une rotation basée sur le total pour varier
-        text = phrases[total % phrases.length];
+      const phrases = [
+        hasName ? `La guérison n'est pas linéaire, ${n}.` : "La guérison n'est pas linéaire. Ce n'est qu'un chiffre.",
+        "Ce recul est temporaire. Ne te juge pas sévèrement.",
+        "C'est un rappel : la réalité gagne souvent, mais pas toujours.",
+        hasName ? `Accepte l'incertitude, ${n}.` : "Accepte l'incertitude. Respire et continue.",
+        "Une bataille perdue ne signifie pas que la guerre est finie.",
+        "C'est normal de trébucher. Ton taux de lucidité reste solide."
+      ];
+      // On force une rotation basée sur le total pour varier
+      text = phrases[total % phrases.length];
     }
 
     // CAS 3 : PROGRESSION (Trend Up) - Renforcement positif
     else if (trend === 'up') {
-        const phrases = [
-            hasName ? `Tu reprends le dessus, ${n}.` : "Tu reprends le dessus. C'est visible.",
-            "Ta perception s'affine. Tu distingues le bruit du signal.",
-            "Tu es en train de reprogrammer ton cerveau.",
-            "Regarde ce chiffre monter. C'est ta victoire.",
-            hasName ? `Bravo ${n}. Tu construis ta preuve.` : "Bravo. Tu construis ta preuve."
-        ];
-        text = phrases[total % phrases.length];
+      const phrases = [
+        hasName ? `Tu reprends le dessus, ${n}.` : "Tu reprends le dessus. C'est visible.",
+        "Ta perception s'affine. Tu distingues le bruit du signal.",
+        "Tu es en train de reprogrammer ton cerveau.",
+        "Regarde ce chiffre monter. C'est ta victoire.",
+        hasName ? `Bravo ${n}. Tu construis ta preuve.` : "Bravo. Tu construis ta preuve."
+      ];
+      text = phrases[total % phrases.length];
     }
 
     // CAS 4 : STABILITÉ (Trend Equal) - Messages de maintenance par paliers
     else {
-        if (currentRate >= 80) {
-            text = hasName ? `Tu maintiens le cap, ${n}.` : "Tu maintiens le cap. Excellent.";
-        } else if (currentRate >= 50) {
-            text = "L'équilibre est là. Continue d'observer.";
-        } else {
-            text = hasName ? `Patience, ${n}. Ça va venir.` : "Patience. La lucidité est un muscle.";
-        }
+      if (currentRate >= 80) {
+        text = hasName ? `Tu maintiens le cap, ${n}.` : "Tu maintiens le cap. Excellent.";
+      } else if (currentRate >= 50) {
+        text = "L'équilibre est là. Continue d'observer.";
+      } else {
+        text = hasName ? `Patience, ${n}. Ça va venir.` : "Patience. La lucidité est un muscle.";
+      }
     }
 
     return { rate: currentRate, totalResolved: total, phrase: text, trend };
@@ -121,21 +121,21 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 relative">
-      
+
       {/* The Big Number */}
       <div className="flex flex-col items-center justify-center mb-12 relative">
-        <motion.div 
+        <motion.div
           {...({
             initial: { opacity: 0, scale: 0.8 },
-            animate: { 
-              opacity: 1, 
-              scale: [1, 1.05, 1], 
+            animate: {
+              opacity: 1,
+              scale: [1, 1.05, 1],
             },
-            transition: { 
-              duration: 0.8, 
+            transition: {
+              duration: 0.8,
               ease: "easeOut",
               scale: {
-                duration: 4, 
+                duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
               }
@@ -143,14 +143,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
           } as any)}
           className="relative z-10"
         >
-          <span className={`text-[8rem] md:text-[10rem] font-thin leading-none tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)] ${
-            trend === 'down' ? 'text-slate-200' : 'text-accent'
-          }`}>
+          <span className={`text-[8rem] md:text-[10rem] font-thin leading-none tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)] ${trend === 'down' ? 'text-slate-200' : 'text-accent'
+            }`}>
             {totalResolved === 0 ? "--" : `${rate}%`}
           </span>
         </motion.div>
-        
-        <motion.p 
+
+        <motion.p
           {...({
             initial: { opacity: 0, y: 20 },
             animate: { opacity: 1, y: 0 },
@@ -163,12 +162,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
       </div>
 
       {/* Reassuring Phrase */}
-      <motion.p 
+      <motion.p
         {...({
-            key: phrase, // Key change triggers animation on phrase update
-            initial: { opacity: 0, y: 10 },
-            animate: { opacity: 1, y: 0 },
-            transition: { duration: 0.5 }
+          key: phrase, // Key change triggers animation on phrase update
+          initial: { opacity: 0, y: 10 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.5 }
         } as any)}
         className="text-center text-lg md:text-2xl text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
       >
@@ -192,4 +191,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ worries, onAddPress, userN
       </motion.button>
     </div>
   );
-};
+});
+
+Dashboard.displayName = 'Dashboard';
+
