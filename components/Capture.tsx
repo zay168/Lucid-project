@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { X, Lock, Calendar, CalendarClock, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+<<<<<<< HEAD
 interface CaptureProps {
   onClose: () => void;
   onSave: (text: string, checkDate: number) => void;
@@ -11,11 +12,42 @@ interface CaptureProps {
 export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
   const [text, setText] = useState('');
   
+=======
+import { Category } from '../types';
+import { Brain } from 'lucide-react';
+
+interface CaptureProps {
+  onClose: () => void;
+  onSave: (text: string, checkDate: number, category?: Category, reframing?: { rationalThought?: string; actionPlan?: string }) => void;
+}
+
+const CATEGORIES: { id: Category; label: string; color: string }[] = [
+  { id: 'work', label: 'Travail', color: 'bg-blue-500' },
+  { id: 'health', label: 'Santé', color: 'bg-emerald-500' },
+  { id: 'social', label: 'Social', color: 'bg-purple-500' },
+  { id: 'finance', label: 'Finance', color: 'bg-amber-500' },
+  { id: 'other', label: 'Autre', color: 'bg-slate-500' },
+];
+
+export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
+  const [text, setText] = useState('');
+  const [category, setCategory] = useState<Category>('other');
+
+  // Reframing State
+  const [showReframing, setShowReframing] = useState(false);
+  const [rationalThought, setRationalThought] = useState('');
+  const [actionPlan, setActionPlan] = useState('');
+
+>>>>>>> e4bc5e8 (big maj)
   // State for date selection
   const [selectionMode, setSelectionMode] = useState<'preset' | 'custom'>('preset');
   const [daysOffset, setDaysOffset] = useState<number>(1);
   const [customDate, setCustomDate] = useState<string>('');
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> e4bc5e8 (big maj)
   const [isLocking, setIsLocking] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
@@ -33,6 +65,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
     let targetTimestamp: number;
 
     if (selectionMode === 'preset') {
+<<<<<<< HEAD
         const date = new Date();
         date.setDate(date.getDate() + daysOffset);
         targetTimestamp = date.getTime();
@@ -47,6 +80,27 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
     // 2.5s total before closing modal
     setTimeout(() => {
       onSave(text, targetTimestamp);
+=======
+      const date = new Date();
+      date.setDate(date.getDate() + daysOffset);
+      targetTimestamp = date.getTime();
+    } else {
+      if (!customDate) return;
+      targetTimestamp = new Date(customDate).getTime();
+    }
+
+    setIsLocking(true);
+
+    // Duration of the full animation sequence (crumple + safe close + lock)
+    // 2.5s total before closing modal
+    setTimeout(() => {
+      onSave(
+        text,
+        targetTimestamp,
+        category,
+        showReframing ? { rationalThought, actionPlan } : undefined
+      );
+>>>>>>> e4bc5e8 (big maj)
     }, 3200);
   };
 
@@ -68,12 +122,20 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
 
   return (
     <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-hidden">
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> e4bc5e8 (big maj)
       {/* Confirmation Modal Overlay */}
       <AnimatePresence>
         {showExitConfirm && (
           <div className="absolute inset-0 z-[60] bg-midnight/90 backdrop-blur-sm flex items-center justify-center p-6">
+<<<<<<< HEAD
             <motion.div 
+=======
+            <motion.div
+>>>>>>> e4bc5e8 (big maj)
               {...({
                 initial: { scale: 0.9, opacity: 0 },
                 animate: { scale: 1, opacity: 1 },
@@ -83,20 +145,32 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-4 text-slate-400">
+<<<<<<< HEAD
                     <AlertTriangle size={24} />
+=======
+                  <AlertTriangle size={24} />
+>>>>>>> e4bc5e8 (big maj)
                 </div>
                 <h3 className="text-white text-lg font-medium mb-2">Abandonner cette pensée ?</h3>
                 <p className="text-slate-400 text-sm mb-6">
                   Le texte saisi sera perdu si vous quittez maintenant.
                 </p>
                 <div className="flex w-full gap-3">
+<<<<<<< HEAD
                   <button 
+=======
+                  <button
+>>>>>>> e4bc5e8 (big maj)
                     onClick={() => setShowExitConfirm(false)}
                     className="flex-1 py-3 rounded-xl bg-slate-800 text-slate-200 font-medium hover:bg-slate-700 transition-colors"
                   >
                     Rester
                   </button>
+<<<<<<< HEAD
                   <button 
+=======
+                  <button
+>>>>>>> e4bc5e8 (big maj)
                     onClick={onClose}
                     className="flex-1 py-3 rounded-xl bg-red-900/20 text-red-400 font-medium border border-red-900/50 hover:bg-red-900/30 transition-colors"
                   >
@@ -120,7 +194,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
 
       <AnimatePresence mode="wait">
         {!isLocking ? (
+<<<<<<< HEAD
           <motion.div 
+=======
+          <motion.div
+>>>>>>> e4bc5e8 (big maj)
             key="form"
             {...({
               initial: { opacity: 0, y: 20 },
@@ -132,27 +210,101 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
             <h2 className="text-2xl font-light text-white mb-6">
               Quelle est votre inquiétude ?
             </h2>
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> e4bc5e8 (big maj)
             <textarea
               autoFocus
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="J'ai peur que..."
+<<<<<<< HEAD
               className="w-full bg-transparent text-xl text-slate-300 placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed"
             />
 
+=======
+              className="w-full bg-transparent text-xl text-slate-300 placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4"
+            />
+
+            {/* Categories */}
+            <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar">
+              {CATEGORIES.map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${category === cat.id
+                    ? `${cat.color} text-white border-transparent`
+                    : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500'
+                    }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Reframing Toggle */}
+            <div className="mb-6">
+              <button
+                onClick={() => setShowReframing(!showReframing)}
+                className="flex items-center gap-2 text-sm text-accent hover:text-white transition-colors"
+              >
+                <Brain size={16} />
+                {showReframing ? 'Masquer le recadrage' : 'Ajouter une perspective rationnelle (TCC)'}
+              </button>
+
+              <AnimatePresence>
+                {showReframing && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-4 space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-xs text-slate-500 uppercase font-bold">Pensée Rationnelle</label>
+                        <textarea
+                          value={rationalThought}
+                          onChange={(e) => setRationalThought(e.target.value)}
+                          placeholder="Quelle est une façon plus réaliste de voir la situation ?"
+                          className="w-full bg-surface/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 outline-none focus:border-accent resize-none h-20"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs text-slate-500 uppercase font-bold">Plan d'Action</label>
+                        <textarea
+                          value={actionPlan}
+                          onChange={(e) => setActionPlan(e.target.value)}
+                          placeholder="Que pouvez-vous faire concrètement ?"
+                          className="w-full bg-surface/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 outline-none focus:border-accent resize-none h-20"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+>>>>>>> e4bc5e8 (big maj)
             <div className="mt-auto">
               <div className="flex items-center gap-2 text-slate-500 mb-4">
                 <Calendar size={16} />
                 <span className="text-sm uppercase tracking-wider">Vérification</span>
               </div>
+<<<<<<< HEAD
               
+=======
+
+>>>>>>> e4bc5e8 (big maj)
               {/* Date Selection Options */}
               <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-2 items-center">
                 {dateOptions.map((opt) => (
                   <button
                     key={opt.value}
                     onClick={() => {
+<<<<<<< HEAD
                         setSelectionMode('preset');
                         setDaysOffset(opt.value);
                     }}
@@ -161,10 +313,20 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                         ? 'bg-accent/10 border-accent text-accent' 
                         : 'bg-surface border-slate-800 text-slate-400'
                     }`}
+=======
+                      setSelectionMode('preset');
+                      setDaysOffset(opt.value);
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors border ${selectionMode === 'preset' && daysOffset === opt.value
+                      ? 'bg-accent/10 border-accent text-accent'
+                      : 'bg-surface border-slate-800 text-slate-400'
+                      }`}
+>>>>>>> e4bc5e8 (big maj)
                   >
                     {opt.label}
                   </button>
                 ))}
+<<<<<<< HEAD
                 
                 {/* Custom Date Button */}
                 <button
@@ -178,11 +340,26 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                     <CalendarClock size={14} />
                     Personnalisé
                   </button>
+=======
+
+                {/* Custom Date Button */}
+                <button
+                  onClick={() => setSelectionMode('custom')}
+                  className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors border flex items-center gap-2 ${selectionMode === 'custom'
+                    ? 'bg-accent/10 border-accent text-accent'
+                    : 'bg-surface border-slate-800 text-slate-400'
+                    }`}
+                >
+                  <CalendarClock size={14} />
+                  Personnalisé
+                </button>
+>>>>>>> e4bc5e8 (big maj)
               </div>
 
               {/* Custom Date Input Panel */}
               <AnimatePresence>
                 {selectionMode === 'custom' && (
+<<<<<<< HEAD
                     <motion.div 
                         {...({
                           initial: { opacity: 0, height: 0 },
@@ -202,6 +379,27 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                             Choisissez la date et l'heure exactes du verdict.
                         </p>
                     </motion.div>
+=======
+                  <motion.div
+                    {...({
+                      initial: { opacity: 0, height: 0 },
+                      animate: { opacity: 1, height: 'auto' },
+                      exit: { opacity: 0, height: 0 }
+                    } as any)}
+                    className="mb-6 overflow-hidden"
+                  >
+                    <input
+                      type="datetime-local"
+                      min={getMinDate()}
+                      value={customDate}
+                      onChange={(e) => setCustomDate(e.target.value)}
+                      className="w-full bg-surface border border-slate-700 text-white rounded-xl p-4 outline-none focus:border-accent transition-colors [color-scheme:dark]"
+                    />
+                    <p className="text-xs text-slate-500 mt-2 ml-1">
+                      Choisissez la date et l'heure exactes du verdict.
+                    </p>
+                  </motion.div>
+>>>>>>> e4bc5e8 (big maj)
                 )}
               </AnimatePresence>
 
@@ -211,18 +409,29 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               <button
                 onClick={handleSave}
                 disabled={isSaveDisabled}
+<<<<<<< HEAD
                 className={`w-full py-4 rounded-xl font-medium tracking-wide text-midnight transition-all ${
                   !isSaveDisabled
                     ? 'bg-accent hover:bg-white' 
                     : 'bg-slate-800 text-slate-500 cursor-not-allowed'
                 }`}
+=======
+                className={`w-full py-4 rounded-xl font-medium tracking-wide text-midnight transition-all ${!isSaveDisabled
+                  ? 'bg-accent hover:bg-white'
+                  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  }`}
+>>>>>>> e4bc5e8 (big maj)
               >
                 Verrouiller cette pensée
               </button>
             </div>
           </motion.div>
         ) : (
+<<<<<<< HEAD
           <motion.div 
+=======
+          <motion.div
+>>>>>>> e4bc5e8 (big maj)
             key="animation-sequence"
             className="absolute inset-0 flex flex-col items-center justify-center bg-midnight"
           >
@@ -230,14 +439,24 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
             <motion.div
               {...({
                 initial: { scale: 1, opacity: 1, borderRadius: "2px" },
+<<<<<<< HEAD
                 animate: { 
                   scale: [1, 0.6, 0.1], 
+=======
+                animate: {
+                  scale: [1, 0.6, 0.1],
+>>>>>>> e4bc5e8 (big maj)
                   rotate: [0, -5, 15, 720],
                   y: [0, 0, 150], // Drops down into the safe
                   opacity: [1, 1, 0] // Fades out as it enters safe
                 },
+<<<<<<< HEAD
                 transition: { 
                   duration: 1.2, 
+=======
+                transition: {
+                  duration: 1.2,
+>>>>>>> e4bc5e8 (big maj)
                   times: [0, 0.4, 1],
                   ease: "easeInOut"
                 }
@@ -261,9 +480,15 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
             >
               {/* Safe Interior Details */}
               <div className="absolute inset-2 border border-slate-800/50 rounded-2xl" />
+<<<<<<< HEAD
               
               {/* 3. SAFE DOOR CLOSING */}
               <motion.div 
+=======
+
+              {/* 3. SAFE DOOR CLOSING */}
+              <motion.div
+>>>>>>> e4bc5e8 (big maj)
                 {...({
                   initial: { x: "100%" },
                   animate: { x: "0%" },
@@ -271,6 +496,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                 } as any)}
                 className="absolute inset-0 bg-slate-800 border-l-2 border-slate-600 z-30 flex items-center justify-center"
               >
+<<<<<<< HEAD
                  {/* The Lock on the door */}
                  <motion.div
                     {...({
@@ -282,6 +508,19 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                  >
                     <Lock size={32} strokeWidth={2.5} />
                  </motion.div>
+=======
+                {/* The Lock on the door */}
+                <motion.div
+                  {...({
+                    initial: { scale: 0, rotate: -45 },
+                    animate: { scale: 1, rotate: 0 },
+                    transition: { delay: 1.9, type: "spring" }
+                  } as any)}
+                  className="p-4 bg-slate-900 rounded-full border border-slate-700 shadow-lg text-emerald-500"
+                >
+                  <Lock size={32} strokeWidth={2.5} />
+                </motion.div>
+>>>>>>> e4bc5e8 (big maj)
               </motion.div>
             </motion.div>
 
@@ -295,7 +534,11 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               className="mt-12 text-center"
             >
               <h3 className="text-xl text-white font-light tracking-widest uppercase mb-2">Sécurisé</h3>
+<<<<<<< HEAD
               <p className="text-slate-500 text-sm">L'angoisse est enfermée.<br/>Reprenez votre vie.</p>
+=======
+              <p className="text-slate-500 text-sm">L'angoisse est enfermée.<br />Reprenez votre vie.</p>
+>>>>>>> e4bc5e8 (big maj)
             </motion.div>
 
           </motion.div>

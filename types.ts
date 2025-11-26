@@ -1,10 +1,24 @@
 
+<<<<<<< HEAD
+=======
+export type Category = 'work' | 'health' | 'social' | 'finance' | 'other';
+
+>>>>>>> e4bc5e8 (big maj)
 export interface Worry {
   id: string;
   text: string;
   createdAt: number; // Timestamp
   checkDate: number; // Timestamp
   status: 'pending' | 'happened' | 'did_not_happen';
+<<<<<<< HEAD
+=======
+  category?: Category;
+  reframing?: {
+    rationalThought?: string;
+    actionPlan?: string;
+  };
+  reflection?: string;
+>>>>>>> e4bc5e8 (big maj)
 }
 
 export type ViewState = 'dashboard' | 'capture' | 'archive' | 'settings';
