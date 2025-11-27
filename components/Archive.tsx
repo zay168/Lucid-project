@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState, memo, useCallback } from 'react';
 import { Worry, Category } from '../types';
-import { CheckCircle2, XCircle, Lock, Trash2 } from 'lucide-react';
+import { CheckCircle2, XCircle, Lock, Trash2, Brain, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES: { id: Category | 'all'; label: string; color: string }[] = [
@@ -29,6 +29,7 @@ interface ArchiveItemProps {
 const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }) => {
   const [isPressing, setIsPressing] = useState(false);
   const [pressProgress, setPressProgress] = useState(0);
+  const [showDetails, setShowDetails] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -120,7 +121,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
           {!isPending && !isPositive && <XCircle size={20} className="text-red-500/70" />}
         </div>
         <div className="flex-1">
-          <p className={`text-base leading-snug ${isPositive ? 'line-through text-slate-500' : 'text-slate-300'}`}>
+          <p className={`text-base leading-snug ${isPositive ? 'line-through text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
             {worry.text}
           </p>
           <div className="flex justify-between items-center mt-2">
@@ -129,7 +130,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
                 {new Date(worry.createdAt).toLocaleDateString('fr-FR')}
               </span>
               {worry.category && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
                   {CATEGORIES.find(c => c.id === worry.category)?.label || worry.category}
                 </span>
               )}
@@ -151,6 +152,55 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
               </span>
             )}
           </div>
+
+          {/* Reframing & Reflection Section Toggle */}
+          {(worry.reframing && (worry.reframing.rationalThought || worry.reframing.actionPlan)) || worry.reflection ? (
+            <div className="mt-3">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDetails(!showDetails);
+                }}
+                className="flex items-center gap-1.5 text-xs font-medium text-accent hover:text-accent/80 transition-colors"
+              >
+                <Brain size={14} />
+                <span>Voir les détails</span>
+                <ChevronDown size={14} className={`transition-transform ${showDetails ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {showDetails && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                      {worry.reframing?.rationalThought && (
+                        <div>
+                          <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Pensée Rationnelle</h4>
+                          <p className="text-sm text-slate-700 dark:text-slate-300 italic">"{worry.reframing.rationalThought}"</p>
+                        </div>
+                      )}
+                      {worry.reframing?.actionPlan && (
+                        <div>
+                          <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Plan d'Action</h4>
+                          <p className="text-sm text-slate-700 dark:text-slate-300">{worry.reframing.actionPlan}</p>
+                        </div>
+                      )}
+                      {worry.reflection && (
+                        <div>
+                          <h4 className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-bold mb-1">💡 Ce que j'ai appris</h4>
+                          <p className="text-sm text-slate-700 dark:text-slate-300 bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded-lg border border-emerald-200 dark:border-emerald-900/30">{worry.reflection}</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : null}
         </div>
       </div>
     </motion.li>
@@ -193,7 +243,7 @@ export const Archive = memo<ArchiveProps>(({ worries, onDelete, onVerify }) => {
   return (
     <div className="h-full overflow-y-auto pb-24 px-6 pt-6">
       <div className="max-w-4xl mx-auto w-full">
-        <h2 className="text-xl font-light text-white mb-6 tracking-wide">
+        <h2 className="text-xl font-light text-[rgb(var(--color-text-main))] mb-6 tracking-wide">
           Archives
         </h2>
 
@@ -204,8 +254,8 @@ export const Archive = memo<ArchiveProps>(({ worries, onDelete, onVerify }) => {
               key={cat.id}
               onClick={() => handleFilterChange(cat.id as any)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border whitespace-nowrap ${filter === cat.id
-                ? 'bg-white text-midnight border-white'
-                : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500'
+                ? 'bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-midnight dark:border-white'
+                : 'bg-transparent border-slate-300 text-slate-500 hover:border-slate-500 dark:border-slate-700'
                 }`}
             >
               {cat.label}
@@ -222,8 +272,8 @@ export const Archive = memo<ArchiveProps>(({ worries, onDelete, onVerify }) => {
             } as any)}
             className="grid grid-cols-3 gap-2 mb-8"
           >
-            <div className="bg-surface/50 border border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold text-white tabular-nums">{stats.total}</span>
+            <div className="bg-surface/50 border border-slate-200 dark:border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold text-[rgb(var(--color-text-main))] tabular-nums">{stats.total}</span>
               <span className="text-[9px] text-slate-500 uppercase tracking-widest mt-1 font-medium">Total</span>
             </div>
 

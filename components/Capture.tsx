@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock, Calendar, CalendarClock, AlertTriangle, Brain } from 'lucide-react';
+import { X, Lock, Calendar, CalendarClock, AlertTriangle, Brain, HeartHandshake } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Category } from '../types';
 
@@ -148,16 +148,35 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
             } as any)}
             className="flex-1 flex flex-col max-w-3xl mx-auto w-full"
           >
-            <h2 className="text-2xl font-light text-white mb-6">
+            <h2 className="text-2xl font-light text-[rgb(var(--color-text-main))] mb-6">
               Quelle est votre inquiétude ?
             </h2>
+
+            {/* Emergency Help Section */}
+            <div className="bg-rose-900/10 border border-rose-900/30 rounded-xl p-4 flex items-start gap-3 mb-6">
+              <div className="p-2 bg-rose-900/20 rounded-lg shrink-0">
+                <HeartHandshake className="text-rose-400" size={18} />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-[rgb(var(--color-text-main))] text-sm font-medium mb-1">Besoin d'aide immédiate ?</h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-2">
+                  LUCID est un outil d'accompagnement, pas un service médical. Si vous êtes en détresse, contactez le 3114.
+                </p>
+                <a
+                  href="tel:3114"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-600/20 text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-xs border border-rose-600/30"
+                >
+                  📞 Appeler le 3114
+                </a>
+              </div>
+            </div>
 
             <textarea
               autoFocus
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="J'ai peur que..."
-              className="w-full bg-transparent text-xl text-slate-300 placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4"
+              className="w-full bg-transparent text-xl text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4"
             />
 
             {/* Categories */}
@@ -201,7 +220,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                           value={rationalThought}
                           onChange={(e) => setRationalThought(e.target.value)}
                           placeholder="Quelle est une façon plus réaliste de voir la situation ?"
-                          className="w-full bg-surface/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 outline-none focus:border-accent resize-none h-20"
+                          className="w-full bg-surface/50 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-accent resize-none h-20"
                         />
                       </div>
                       <div className="space-y-2">
@@ -210,7 +229,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                           value={actionPlan}
                           onChange={(e) => setActionPlan(e.target.value)}
                           placeholder="Que pouvez-vous faire concrètement ?"
-                          className="w-full bg-surface/50 border border-slate-700 rounded-lg p-3 text-sm text-slate-300 outline-none focus:border-accent resize-none h-20"
+                          className="w-full bg-surface/50 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-sm text-slate-700 dark:text-slate-300 outline-none focus:border-accent resize-none h-20"
                         />
                       </div>
                     </div>
@@ -272,7 +291,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
                       min={getMinDate()}
                       value={customDate}
                       onChange={(e) => setCustomDate(e.target.value)}
-                      className="w-full bg-surface border border-slate-700 text-white rounded-xl p-4 outline-none focus:border-accent transition-colors [color-scheme:dark]"
+                      className="w-full bg-surface border border-slate-200 dark:border-slate-700 text-[rgb(var(--color-text-main))] rounded-xl p-4 outline-none focus:border-accent transition-colors [color-scheme:light] dark:[color-scheme:dark]"
                     />
                     <p className="text-xs text-slate-500 mt-2 ml-1">
                       Choisissez la date et l'heure exactes du verdict.

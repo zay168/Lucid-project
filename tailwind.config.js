@@ -5,12 +5,13 @@ export default {
     "./*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
-        midnight: '#05050A',
-        surface: '#0F121E',
-        accent: '#A78BFA', // Soft Lavender
+        midnight: 'rgb(var(--color-midnight) / <alpha-value>)',
+        surface: 'rgb(var(--color-surface) / <alpha-value>)',
+        accent: '#A78BFA', // Soft Lavender - Keeps same accent for now
         success: '#34D399', // Soft Mint
         muted: '#4B5563',
       },

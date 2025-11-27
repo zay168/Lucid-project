@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Shield, Download, Upload, MessageSquare, Send } from 'lucide-react';
+import { Trash2, Shield, Download, Upload, MessageSquare, Send, HeartHandshake, Sun, Moon, Monitor } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Worry } from '../types';
 
@@ -9,9 +9,11 @@ interface SettingsProps {
     onReset: () => void;
     worries: Worry[];
     onImport: (data: Worry[]) => void;
+    theme: 'light' | 'dark' | 'system';
+    onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onReset, worries, onImport }) => {
+export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onReset, worries, onImport, theme, onThemeChange }) => {
     const [name, setName] = useState(currentName);
     const [confirmReset, setConfirmReset] = useState(false);
     const [feedback, setFeedback] = useState('');
@@ -60,8 +62,6 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
         const body = encodeURIComponent(feedback);
         window.location.href = `mailto:htrheryh@gmail.com?subject=${subject}&body=${body}`;
         setFeedback('');
-        // Optional: Show a toast or alert
-        // alert('Merci pour votre retour !'); 
     };
 
     return (
@@ -74,9 +74,48 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
             className="h-full flex flex-col p-6 relative z-20 overflow-y-auto"
         >
             <div className="max-w-2xl mx-auto w-full h-full flex flex-col pt-4">
-                <h2 className="text-3xl font-light text-white mb-12 tracking-wide">Paramètres du compte</h2>
+                <h2 className="text-3xl font-light text-[rgb(var(--color-text-main))] mb-12 tracking-wide">Paramètres du compte</h2>
 
                 <div className="space-y-12">
+                    {/* Theme Section (NEW) */}
+                    <section>
+                        <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
+                            Apparence
+                        </label>
+                        <div className="grid grid-cols-3 gap-4">
+                            <button
+                                onClick={() => onThemeChange('light')}
+                                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'light'
+                                    ? 'bg-slate-100 border-accent text-slate-900'
+                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    }`}
+                            >
+                                <Sun size={24} className={theme === 'light' ? 'text-orange-500' : ''} />
+                                <span className="text-sm font-medium">Clair</span>
+                            </button>
+                            <button
+                                onClick={() => onThemeChange('dark')}
+                                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'dark'
+                                    ? 'bg-slate-800 border-accent text-white'
+                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    }`}
+                            >
+                                <Moon size={24} className={theme === 'dark' ? 'text-accent' : ''} />
+                                <span className="text-sm font-medium">Sombre</span>
+                            </button>
+                            <button
+                                onClick={() => onThemeChange('system')}
+                                className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'system'
+                                    ? 'bg-slate-800 border-accent text-white'
+                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    }`}
+                            >
+                                <Monitor size={24} className={theme === 'system' ? 'text-blue-400' : ''} />
+                                <span className="text-sm font-medium">Système</span>
+                            </button>
+                        </div>
+                    </section>
+
                     {/* Name Section */}
                     <section>
                         <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
@@ -87,14 +126,14 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="flex-1 bg-surface border border-slate-800 rounded-xl px-6 py-4 text-white text-lg outline-none focus:border-accent transition-colors placeholder-slate-700"
+                                className="flex-1 bg-surface border border-slate-200 dark:border-slate-800 rounded-xl px-6 py-4 text-[rgb(var(--color-text-main))] text-lg outline-none focus:border-accent transition-colors placeholder-slate-400 dark:placeholder-slate-700"
                                 placeholder="Votre prénom"
                             />
                             <button
                                 onClick={handleSave}
                                 disabled={!name.trim() || name === currentName}
                                 className={`px-6 rounded-xl flex items-center justify-center transition-colors font-medium ${!name.trim() || name === currentName
-                                    ? 'bg-slate-900 text-slate-600 border border-slate-800'
+                                    ? 'bg-slate-200 text-slate-400 border border-slate-300 dark:bg-slate-900 dark:text-slate-600 dark:border-slate-800'
                                     : 'bg-accent text-midnight hover:bg-white'
                                     }`}
                             >
@@ -113,8 +152,8 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                 <Shield className="text-emerald-500" size={24} />
                             </div>
                             <div>
-                                <h3 className="text-white text-lg font-medium mb-2">100% Privé & Hors Ligne</h3>
-                                <p className="text-sm text-slate-400 leading-relaxed">
+                                <h3 className="text-[rgb(var(--color-text-main))] text-lg font-medium mb-2">100% Privé & Hors Ligne</h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
                                     LUCID est conçu comme un coffre-fort. Vos données sont stockées uniquement dans la mémoire locale de votre navigateur. Aucune donnée ne transite sur internet, aucune IA ne lit vos pensées.
                                 </p>
                             </div>
@@ -129,19 +168,19 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <button
                                 onClick={handleExport}
-                                className="flex items-center justify-center gap-3 p-4 bg-surface border border-slate-800 rounded-xl text-slate-300 hover:bg-slate-800 hover:border-slate-700 transition-all group"
+                                className="flex items-center justify-center gap-3 p-4 bg-surface border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all group"
                             >
                                 <Download size={20} className="text-accent group-hover:scale-110 transition-transform" />
                                 <div className="text-left">
-                                    <div className="font-medium text-white">Exporter</div>
+                                    <div className="font-medium text-[rgb(var(--color-text-main))]">Exporter</div>
                                     <div className="text-xs text-slate-500">Sauvegarder en JSON</div>
                                 </div>
                             </button>
 
-                            <label className="flex items-center justify-center gap-3 p-4 bg-surface border border-slate-800 rounded-xl text-slate-300 hover:bg-slate-800 hover:border-slate-700 transition-all cursor-pointer group">
+                            <label className="flex items-center justify-center gap-3 p-4 bg-surface border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group">
                                 <Upload size={20} className="text-accent group-hover:scale-110 transition-transform" />
                                 <div className="text-left">
-                                    <div className="font-medium text-white">Importer</div>
+                                    <div className="font-medium text-[rgb(var(--color-text-main))]">Importer</div>
                                     <div className="text-xs text-slate-500">Restaurer une sauvegarde</div>
                                 </div>
                                 <input
@@ -165,8 +204,8 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                     <MessageSquare size={20} className="text-accent" />
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-medium">Aidez-nous à améliorer Lucid</h3>
-                                    <p className="text-sm text-slate-400 mt-1">Une idée ? Un bug ? Dites-nous tout.</p>
+                                    <h3 className="text-[rgb(var(--color-text-main))] font-medium">Aidez-nous à améliorer Lucid</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Une idée ? Un bug ? Dites-nous tout.</p>
                                 </div>
                             </div>
 
@@ -174,7 +213,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                 value={feedback}
                                 onChange={(e) => setFeedback(e.target.value)}
                                 placeholder="J'aimerais pouvoir..."
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl p-4 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-accent resize-none h-32 mb-4 transition-colors"
+                                className="w-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-accent resize-none h-32 mb-4 transition-colors"
                             />
 
                             <div className="flex justify-end">
@@ -186,6 +225,30 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                     <Send size={18} />
                                     Envoyer
                                 </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Help & Emergency Section (NEW) */}
+                    <section>
+                        <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
+                            Aide & Urgence
+                        </label>
+                        <div className="bg-rose-900/10 border border-rose-900/30 rounded-xl p-6 flex items-start gap-6">
+                            <div className="p-3 bg-rose-900/20 rounded-lg shrink-0">
+                                <HeartHandshake className="text-rose-400" size={24} />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="text-[rgb(var(--color-text-main))] text-lg font-medium mb-2">Besoin d'aide immédiate ?</h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+                                    LUCID est un outil d'accompagnement, pas un service médical. Si vous êtes en détresse, contactez le 3114.
+                                </p>
+                                <a
+                                    href="tel:3114"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600/20 text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-sm border border-rose-600/30"
+                                >
+                                    📞 Appeler le 3114
+                                </a>
                             </div>
                         </div>
                     </section>

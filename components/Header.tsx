@@ -20,32 +20,32 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onChange }) => {
   return (
     <header className="absolute top-0 left-0 right-0 p-8 md:p-12 flex items-center justify-between z-40 max-w-7xl mx-auto w-full">
       {/* Logo / Brand */}
-      <div 
+      <div
         onClick={() => onChange('dashboard')}
         className="cursor-pointer group"
       >
-        <h1 className="text-2xl font-extrabold tracking-tighter text-white group-hover:text-accent transition-colors">
+        <h1 className="text-2xl font-extrabold tracking-tighter text-[rgb(var(--color-text-main))] group-hover:text-accent transition-colors">
           LUCID
         </h1>
       </div>
 
       {/* Desktop Navigation */}
       <nav className="flex items-center gap-8 md:gap-12">
-        <button 
+        <button
           onClick={() => onChange('dashboard')}
           className={linkClass('dashboard')}
         >
           Accueil
         </button>
-        
-        <button 
+
+        <button
           onClick={() => onChange('archive')}
           className={linkClass('archive')}
         >
           Archives
         </button>
 
-        <button 
+        <button
           onClick={() => onChange('settings')}
           className={`${linkClass('settings')} flex items-center gap-2`}
           aria-label="Paramètres"

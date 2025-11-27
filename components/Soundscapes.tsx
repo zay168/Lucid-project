@@ -34,11 +34,11 @@ export function Soundscapes() {
                         initial={{ opacity: 0, y: 20, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.9 }}
-                        className="bg-midnight/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl w-64 mb-2"
+                        className="bg-white/90 dark:bg-midnight/90 backdrop-blur-xl border border-slate-200 dark:border-white/10 p-4 rounded-2xl shadow-2xl w-64 mb-2"
                     >
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between text-sm text-slate-400 pb-2 border-b border-white/10">
-                                <span className="font-medium text-white">Ambiances</span>
+                            <div className="flex items-center justify-between text-sm text-slate-400 pb-2 border-b border-slate-200 dark:border-white/10">
+                                <span className="font-medium text-[rgb(var(--color-text-main))]">Ambiances</span>
                                 <button
                                     onClick={() => setIsPlaying(!isPlaying)}
                                     className={`p-1.5 rounded-full transition-colors ${isPlaying ? 'bg-accent text-midnight' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
@@ -60,8 +60,8 @@ export function Soundscapes() {
                                             }
                                         }}
                                         className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all group ${currentSound.id === sound.id
-                                            ? 'bg-white/10 text-white font-medium'
-                                            : 'hover:bg-white/5 text-slate-400 hover:text-slate-200'
+                                            ? 'bg-slate-200 text-slate-900 font-medium dark:bg-white/10 dark:text-white'
+                                            : 'hover:bg-slate-100 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                                             }`}
                                     >
                                         <span>{sound.name}</span>
@@ -114,7 +114,7 @@ export function Soundscapes() {
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={`p-3 rounded-full shadow-lg backdrop-blur-md border transition-all ${isPlaying
                     ? 'bg-accent text-midnight border-accent'
-                    : 'bg-midnight/80 text-slate-400 border-white/10 hover:border-white/20'
+                    : 'bg-white/80 dark:bg-midnight/80 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
                     }`}
             >
                 <Music size={20} />

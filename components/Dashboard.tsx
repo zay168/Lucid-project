@@ -143,7 +143,7 @@ export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }
           } as any)}
           className="relative z-10"
         >
-          <span className={`text-[8rem] md:text-[10rem] font-thin leading-none tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)] ${trend === 'down' ? 'text-slate-200' : 'text-accent'
+          <span className={`text-[8rem] md:text-[10rem] font-thin leading-none tracking-tighter tabular-nums drop-shadow-[0_0_30px_rgba(167,139,250,0.2)] ${trend === 'down' ? 'text-slate-400 dark:text-slate-200' : 'text-accent'
             }`}>
             {totalResolved === 0 ? "--" : `${rate}%`}
           </span>
@@ -169,7 +169,7 @@ export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.5 }
         } as any)}
-        className="text-center text-lg md:text-2xl text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
+        className="text-center text-lg md:text-2xl text-slate-600 dark:text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
       >
         {phrase}
       </motion.p>
@@ -184,7 +184,7 @@ export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }
           whileTap: { scale: 0.95 }
         } as any)}
         onClick={onAddPress}
-        className="bg-surface border border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-6 md:p-8 rounded-full text-accent hover:bg-slate-900 hover:border-accent/50 transition-colors group"
+        className="bg-surface border border-slate-200 dark:border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-6 md:p-8 rounded-full text-accent hover:bg-slate-100 dark:hover:bg-slate-900 hover:border-accent/50 transition-colors group"
         aria-label="Ajouter une angoisse"
       >
         <Plus size={32} strokeWidth={1.5} className="group-hover:rotate-90 transition-transform duration-300" />
