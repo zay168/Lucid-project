@@ -86,7 +86,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
   const isSaveDisabled = !text.trim() || (selectionMode === 'custom' && !customDate);
 
   return (
-    <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-hidden">
+    <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-y-auto">
 
       {/* Confirmation Modal Overlay */}
       <AnimatePresence>
@@ -146,7 +146,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               animate: { opacity: 1, y: 0 },
               exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } }
             } as any)}
-            className="flex-1 flex flex-col max-w-3xl mx-auto w-full"
+            className="flex-1 flex flex-col max-w-3xl mx-auto w-full overflow-y-auto"
           >
             <h2 className="text-2xl font-light text-[rgb(var(--color-text-main))] mb-6">
               Quelle est votre inquiétude ?

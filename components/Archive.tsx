@@ -154,7 +154,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
           </div>
 
           {/* Reframing & Reflection Section Toggle */}
-          {(worry.reframing && (worry.reframing.rationalThought || worry.reframing.actionPlan)) || worry.reflection ? (
+          {worry.reframing || worry.reflection ? (
             <div className="mt-3">
               <button
                 onClick={(e) => {
