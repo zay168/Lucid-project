@@ -3,23 +3,23 @@
 @tailwind utilities;
 
 :root {
-  /* Light Mode (Default) */
-  --color-midnight: 241 245 249;
-  /* Slate 100 */
+  /* Light Mode (Premium) */
+  --color-midnight: 248 250 252;
+  /* Slate 50 - Brighter, cleaner */
   --color-surface: 255 255 255;
-  /* White */
+  /* Pure White */
   --color-text-main: 15 23 42;
-  /* Slate 900 */
+  /* Slate 900 - Sharp text */
 }
 
 .dark {
-  /* Dark Mode */
-  --color-midnight: 5 5 10;
-  /* #05050A */
-  --color-surface: 15 18 30;
-  /* #0F121E */
-  --color-text-main: 226 232 240;
-  /* Slate 200 */
+  /* Dark Mode (Deep Space) */
+  --color-midnight: 2 6 23;
+  /* Slate 950 - Deeper black/blue */
+  --color-surface: 15 23 42;
+  /* Slate 900 */
+  --color-text-main: 241 245 249;
+  /* Slate 100 */
 }
 
 body {
@@ -66,4 +66,10 @@ body {
   opacity: 0.08;
   /* Slightly increased for local effect */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 768px) {
+  .cinematic-noise {
+    display: none;
+  }
 }

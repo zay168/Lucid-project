@@ -14,6 +14,7 @@ const Onboarding = lazy(() => import('./components/Onboarding').then(module => (
 const VerificationOverlay = lazy(() => import('./components/VerificationOverlay').then(module => ({ default: module.VerificationOverlay })));
 const Soundscapes = lazy(() => import('./components/Soundscapes').then(module => ({ default: module.Soundscapes })));
 const NotificationToast = lazy(() => import('./components/NotificationToast').then(module => ({ default: module.NotificationToast })));
+const BreathingExercise = lazy(() => import('./components/BreathingExercise').then(module => ({ default: module.BreathingExercise })));
 
 const STORAGE_KEY = 'lucid_worries_v1';
 const ONBOARDING_KEY = 'lucid_onboarding_completed';
@@ -31,33 +32,34 @@ const LoadingFallback = () => (
 
 export default function App() {
   // --- STATE ---
-  const [worries, setWorries] = useState<Worry[]>([]);
+  const [worries, setWorries] = useState<Worry[]>(() => loadFromStorage<Worry[]>(STORAGE_KEY, []));
   const [view, setView] = useState<ViewState>('dashboard');
-  const [showLanding, setShowLanding] = useState(true);
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [userName, setUserName] = useState<string>('');
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
+
+  // Initialize based on storage to skip Landing/Onboarding if already done
+  const [showLanding, setShowLanding] = useState(() => {
+    const onboardingDone = loadFromStorage<boolean | string>(ONBOARDING_KEY, false);
+    return onboardingDone !== true && onboardingDone !== 'true';
+  });
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    const onboardingDone = loadFromStorage<boolean | string>(ONBOARDING_KEY, false);
+    return onboardingDone !== true && onboardingDone !== 'true';
+  });
+
+  const [userName, setUserName] = useState<string>(() => loadFromStorage<string>(NAME_KEY, ''));
+
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
+    return (localStorage.getItem(THEME_KEY) as 'light' | 'dark' | 'system') || 'system';
+  });
 
   // Overlay state
   const [activeOverlayWorry, setActiveOverlayWorry] = useState<Worry | null>(null);
   const [dueNotificationWorry, setDueNotificationWorry] = useState<Worry | null>(null);
 
   // --- LOAD DATA ---
+  // --- LOAD DATA & CLEANUP ---
   useEffect(() => {
-    const loadData = () => {
-      const loadedWorries = loadFromStorage<Worry[]>(STORAGE_KEY, []);
-      const loadedName = loadFromStorage<string>(NAME_KEY, '');
-      const onboardingDone = localStorage.getItem(ONBOARDING_KEY) === 'true';
-      const savedTheme = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | 'system' | null;
-
-      setWorries(loadedWorries);
-      setUserName(loadedName);
-      setShowOnboarding(!onboardingDone);
-      if (savedTheme) setTheme(savedTheme);
-    };
-
-    loadData();
-
+    // Data is now loaded in initial state, so we only need to handle cleanup
     const handleBeforeUnload = () => {
       flushPendingSaves();
     };
@@ -98,13 +100,12 @@ export default function App() {
   }, []);
 
   const handleEnterApp = useCallback(() => {
-    const onboardingDone = localStorage.getItem(ONBOARDING_KEY);
+    // If onboarding is not done, showOnboarding is already true from init
     setShowLanding(false);
-    if (onboardingDone !== 'true') setShowOnboarding(true);
   }, []);
 
   const handleOnboardingComplete = useCallback((name: string) => {
-    saveToStorage(ONBOARDING_KEY, 'true');
+    saveToStorage(ONBOARDING_KEY, true);
     saveToStorage(NAME_KEY, name);
     setUserName(name);
     setShowOnboarding(false);
@@ -191,10 +192,10 @@ export default function App() {
   const pageTransition = useMemo(() => prefersReducedMotion
     ? { initial: {}, animate: {}, exit: {}, transition: {} }
     : {
-      initial: { opacity: 0, scale: 0.95, filter: 'blur(10px)' },
-      animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-      exit: { opacity: 0, scale: 1.05, filter: 'blur(10px)' },
-      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
+      initial: { opacity: 0, scale: 0.95 },
+      animate: { opacity: 1, scale: 1 },
+      exit: { opacity: 0, scale: 1.05 },
+      transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }
     }, [prefersReducedMotion]);
 
   return (
@@ -226,7 +227,13 @@ export default function App() {
             <AnimatePresence mode="wait">
               {view === 'dashboard' && (
                 <motion.div key="dashboard" className="absolute inset-0 pt-24" {...pageTransition}>
-                  <Dashboard worries={worries} onAddPress={() => setView('capture')} onSettingsPress={() => setView('settings')} userName={userName} />
+                  <Dashboard
+                    worries={worries}
+                    onAddPress={() => setView('capture')}
+                    onSettingsPress={() => setView('settings')}
+                    onBreathingPress={() => setView('breathing')}
+                    userName={userName}
+                  />
                 </motion.div>
               )}
               {view === 'archive' && (
@@ -247,6 +254,7 @@ export default function App() {
                       onImport={handleImportData}
                       theme={theme}
                       onThemeChange={handleThemeChange}
+                      onShowLanding={() => setShowLanding(true)}
                     />
                   </motion.div>
                 </Suspense>
@@ -255,6 +263,13 @@ export default function App() {
                 <Suspense fallback={<LoadingFallback />}>
                   <motion.div key="capture" className="absolute inset-0 z-50" initial={{ opacity: 0, y: '100%' }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: '100%' }} transition={{ type: "spring", damping: 25, stiffness: 200 }}>
                     <Capture onClose={() => setView('dashboard')} onSave={handleSaveWorry} />
+                  </motion.div>
+                </Suspense>
+              )}
+              {view === 'breathing' && (
+                <Suspense fallback={<LoadingFallback />}>
+                  <motion.div key="breathing" className="absolute inset-0 z-50" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <BreathingExercise onClose={() => setView('dashboard')} />
                   </motion.div>
                 </Suspense>
               )}

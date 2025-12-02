@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import {
   BrainCircuit, ArrowRight, Lock, Hourglass, CheckCircle2, ChevronDown, Quote,
-  Github, Shield, Zap, Moon, Code2, ExternalLink
+  Github, Shield, Zap, Code2, ExternalLink
 } from 'lucide-react';
 
 // Fix for missing Variants export
@@ -43,7 +43,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
             },
             transition: { duration: 20, repeat: Infinity, ease: "linear" }
           } as any)}
-          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-accent/10 rounded-full blur-[120px]"
+          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-accent/10 rounded-full blur-[60px] md:blur-[120px] will-change-transform"
         />
         <motion.div
           {...({
@@ -54,7 +54,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
             },
             transition: { duration: 15, repeat: Infinity, ease: "easeInOut" }
           } as any)}
-          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-900/20 rounded-full blur-[150px]"
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-900/20 rounded-full blur-[80px] md:blur-[150px] will-change-transform"
         />
       </div>
 
@@ -88,7 +88,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
 
           <motion.p
             variants={fadeIn}
-            className="text-base md:text-2xl text-slate-400 font-light max-w-2xl leading-relaxed mb-8 md:mb-12 px-4"
+            className="text-base md:text-2xl text-slate-600 dark:text-slate-400 font-light max-w-2xl leading-relaxed mb-8 md:mb-12 px-4"
           >
             LUCID transforme vos angoisses en statistiques. <br className="hidden md:block" />
             Une approche stoïcienne assistée par la technologie.
@@ -101,7 +101,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
               whileHover: { scale: 1.05 },
               whileTap: { scale: 0.95 }
             } as any)}
-            className="px-8 py-4 md:px-10 md:py-5 bg-white text-midnight rounded-full font-bold text-lg md:text-xl tracking-wide shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] hover:shadow-[0_0_60px_-10px_rgba(167,139,250,0.8)] transition-all duration-300 flex items-center gap-3 group"
+            className="px-8 py-4 md:px-10 md:py-5 bg-slate-900 dark:bg-white text-white dark:text-midnight rounded-full font-bold text-lg md:text-xl tracking-wide shadow-[0_0_40px_-10px_rgba(15,23,42,0.3)] dark:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] hover:shadow-[0_0_60px_-10px_rgba(167,139,250,0.8)] transition-all duration-300 flex items-center gap-3 group"
           >
             Commencer l'expérience
             <ArrowRight className="group-hover:translate-x-1 transition-transform" />
@@ -123,7 +123,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
 
 
       {/* --- SECTION 2: PHILOSOPHY (Grain Applied Here) --- */}
-      <section className="py-20 md:py-32 px-6 bg-surface/30 relative z-10 border-y border-slate-800/50 backdrop-blur-sm overflow-hidden">
+      <section className="py-20 md:py-32 px-6 bg-surface/30 relative z-10 border-y border-slate-200 dark:border-slate-800/50 backdrop-blur-sm overflow-hidden">
         {/* Cinematic Noise specifically for this section */}
         <div className="cinematic-noise" />
 
@@ -195,7 +195,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
       </section>
 
       {/* --- SECTION 4: SCIENCE & PRIVACY --- */}
-      <section className="py-20 md:py-32 px-6 relative z-10 border-t border-slate-800/30">
+      <section className="py-20 md:py-32 px-6 relative z-10 border-t border-slate-200 dark:border-slate-800/30">
         <div className="max-w-6xl mx-auto">
           <motion.div
             {...({
@@ -236,20 +236,10 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
             </motion.div>
 
             {/* Card 3: Design */}
-            <motion.div variants={fadeIn} className="bg-white dark:bg-surface border border-slate-200 dark:border-slate-800 p-6 md:p-10 rounded-3xl relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mb-4 md:mb-6">
-                  <Moon className="text-slate-600 dark:text-slate-300 w-6 h-6 md:w-auto md:h-auto" />
-                </div>
-                <h3 className="text-xl md:text-2xl font-bold text-[rgb(var(--color-text-main))] mb-2 md:mb-3">Mode Sombre</h3>
-                <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Conçu pour être utilisé la nuit, quand l'anxiété frappe le plus fort.
-                </p>
-              </div>
-            </motion.div>
+
 
             {/* Card 4: Speed */}
-            <motion.div variants={fadeIn} className="col-span-1 md:col-span-2 bg-white dark:bg-surface border border-slate-200 dark:border-slate-800 p-6 md:p-10 rounded-3xl relative overflow-hidden">
+            <motion.div variants={fadeIn} className="col-span-1 md:col-span-3 bg-white dark:bg-surface border border-slate-200 dark:border-slate-800 p-6 md:p-10 rounded-3xl relative overflow-hidden">
               <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 relative z-10">
                 <div className="flex-1">
                   <div className="w-10 h-10 md:w-12 md:h-12 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center mb-4 md:mb-6">
@@ -323,7 +313,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="py-8 md:py-12 text-center text-slate-600 text-xs md:text-sm relative z-10 border-t border-slate-900">
+      <footer className="py-8 md:py-12 text-center text-slate-600 text-xs md:text-sm relative z-10 border-t border-slate-200 dark:border-slate-900">
         <p className="mb-2">Code & Design par <span className="text-slate-400 font-medium">@zay168</span></p>
         <p>LUCID © Tous droits réservés.</p>
       </footer>

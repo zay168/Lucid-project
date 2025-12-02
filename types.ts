@@ -14,6 +14,6 @@ export interface Worry {
   reflection?: string;
 }
 
-export type ViewState = 'dashboard' | 'capture' | 'archive' | 'settings';
+export type ViewState = 'dashboard' | 'capture' | 'archive' | 'settings' | 'breathing';
 
 export const MOCK_INITIAL_DATA: Worry[] = []; // Start empty as requested

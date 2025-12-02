@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Shield, Download, Upload, MessageSquare, Send, HeartHandshake, Sun, Moon, Monitor } from 'lucide-react';
+import { Trash2, Shield, Download, Upload, MessageSquare, Send, HeartHandshake, Sun, Moon, Monitor, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Worry } from '../types';
 
@@ -11,9 +11,10 @@ interface SettingsProps {
     onImport: (data: Worry[]) => void;
     theme: 'light' | 'dark' | 'system';
     onThemeChange: (theme: 'light' | 'dark' | 'system') => void;
+    onShowLanding: () => void;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onReset, worries, onImport, theme, onThemeChange }) => {
+export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, onReset, worries, onImport, theme, onThemeChange, onShowLanding }) => {
     const [name, setName] = useState(currentName);
     const [confirmReset, setConfirmReset] = useState(false);
     const [feedback, setFeedback] = useState('');
@@ -114,6 +115,28 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                 <span className="text-sm font-medium">Système</span>
                             </button>
                         </div>
+                    </section>
+
+                    {/* About / Intro Section */}
+                    <section>
+                        <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
+                            À propos
+                        </label>
+                        <button
+                            onClick={onShowLanding}
+                            className="w-full flex items-center justify-between p-4 bg-surface border border-slate-200 dark:border-slate-800 rounded-xl text-[rgb(var(--color-text-main))] hover:bg-slate-100 dark:hover:bg-slate-800 hover:border-accent/50 transition-all group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition-colors">
+                                    <Sparkles size={20} className="text-indigo-500" />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-medium">Revoir l'introduction</div>
+                                    <div className="text-xs text-slate-500">Afficher l'animation de bienvenue</div>
+                                </div>
+                            </div>
+                            <div className="text-slate-400 group-hover:text-accent transition-colors">→</div>
+                        </button>
                     </section>
 
                     {/* Name Section */}

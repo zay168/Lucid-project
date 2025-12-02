@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onChange }) => {
 
   const linkClass = (view: ViewState) => `
     text-sm font-medium tracking-widest uppercase transition-all duration-300 hover:text-accent cursor-pointer
-    ${currentView === view ? 'text-white' : 'text-slate-500'}
+    ${currentView === view ? 'text-[rgb(var(--color-text-main))] font-bold' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}
   `;
 
   return (
@@ -51,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onChange }) => {
           aria-label="Paramètres"
         >
           <span className="hidden md:inline">Paramètres</span>
-          <Settings size={20} className={currentView === 'settings' ? 'text-white' : 'text-slate-500'} />
+          <Settings size={20} className={currentView === 'settings' ? 'text-[rgb(var(--color-text-main))]' : 'text-slate-500'} />
         </button>
       </nav>
     </header>

@@ -1,5 +1,5 @@
 import { useMemo, memo } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Wind } from 'lucide-react';
 import { Worry } from '../types';
 import { motion } from 'framer-motion';
 
@@ -7,11 +7,12 @@ interface DashboardProps {
   worries: Worry[];
   onAddPress: () => void;
   onSettingsPress: () => void;
+  onBreathingPress: () => void;
   userName?: string;
 }
 
 // ✨ MEMOIZED - Avoid re-renders when props haven't changed
-export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }) => {
+export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName, onBreathingPress }) => {
 
   // Helper pour mettre la majuscule
   const formatName = (name: string) => {
@@ -155,7 +156,7 @@ export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }
             animate: { opacity: 1, y: 0 },
             transition: { delay: 0.3, duration: 0.8 }
           } as any)}
-          className="text-slate-400 text-sm md:text-base uppercase tracking-[0.2em] mt-2 font-medium"
+          className="text-slate-500 dark:text-slate-400 text-sm md:text-base uppercase tracking-[0.2em] mt-2 font-medium"
         >
           Taux de Lucidité
         </motion.p>
@@ -169,26 +170,43 @@ export const Dashboard = memo<DashboardProps>(({ worries, onAddPress, userName }
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.5 }
         } as any)}
-        className="text-center text-lg md:text-2xl text-slate-600 dark:text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
+        className="text-center text-lg md:text-2xl text-slate-700 dark:text-slate-300 font-light max-w-xl leading-relaxed mb-12 min-h-[3rem]"
       >
         {phrase}
       </motion.p>
 
       {/* Action Button - Centered in flow */}
-      <motion.button
-        {...({
-          initial: { opacity: 0, scale: 0.8 },
-          animate: { opacity: 1, scale: 1 },
-          transition: { delay: 0.8 },
-          whileHover: { scale: 1.05 },
-          whileTap: { scale: 0.95 }
-        } as any)}
-        onClick={onAddPress}
-        className="bg-surface border border-slate-200 dark:border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-6 md:p-8 rounded-full text-accent hover:bg-slate-100 dark:hover:bg-slate-900 hover:border-accent/50 transition-colors group"
-        aria-label="Ajouter une angoisse"
-      >
-        <Plus size={32} strokeWidth={1.5} className="group-hover:rotate-90 transition-transform duration-300" />
-      </motion.button>
+      <div className="flex items-center gap-6">
+        <motion.button
+          {...({
+            initial: { opacity: 0, scale: 0.8 },
+            animate: { opacity: 1, scale: 1 },
+            transition: { delay: 0.8 },
+            whileHover: { scale: 1.05 },
+            whileTap: { scale: 0.95 }
+          } as any)}
+          onClick={onAddPress}
+          className="bg-surface border border-slate-200 dark:border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-6 md:p-8 rounded-full text-accent hover:bg-slate-100 dark:hover:bg-slate-900 hover:border-accent/50 transition-colors group"
+          aria-label="Ajouter une angoisse"
+        >
+          <Plus size={32} strokeWidth={1.5} className="group-hover:rotate-90 transition-transform duration-300" />
+        </motion.button>
+
+        <motion.button
+          {...({
+            initial: { opacity: 0, scale: 0.8 },
+            animate: { opacity: 1, scale: 1 },
+            transition: { delay: 0.9 },
+            whileHover: { scale: 1.05 },
+            whileTap: { scale: 0.95 }
+          } as any)}
+          onClick={onBreathingPress}
+          className="bg-surface border border-slate-200 dark:border-slate-800 shadow-[0_0_40px_rgba(167,139,250,0.1)] p-4 rounded-full text-slate-400 hover:text-accent hover:bg-slate-100 dark:hover:bg-slate-900 hover:border-accent/50 transition-colors group"
+          aria-label="Exercice de respiration"
+        >
+          <Wind size={24} strokeWidth={1.5} />
+        </motion.button>
+      </div>
     </div>
   );
 });
