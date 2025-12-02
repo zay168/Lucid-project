@@ -86,7 +86,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
   const isSaveDisabled = !text.trim() || (selectionMode === 'custom' && !customDate);
 
   return (
-    <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-y-auto">
+    <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-hidden">
 
       {/* Confirmation Modal Overlay */}
       <AnimatePresence>
@@ -176,7 +176,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="J'ai peur que..."
-              className="w-full bg-transparent text-xl text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4"
+              className="w-full bg-transparent text-xl text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4 min-h-[150px]"
             />
 
             {/* Categories */}
@@ -238,7 +238,7 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
               </AnimatePresence>
             </div>
 
-            <div className="mt-auto">
+            <div className="mt-auto shrink-0">
               <div className="flex items-center gap-2 text-slate-500 mb-4">
                 <Calendar size={16} />
                 <span className="text-sm uppercase tracking-wider">Vérification</span>
