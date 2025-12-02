@@ -124,13 +124,13 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
           <p className={`text-base leading-snug ${isPositive ? 'line-through text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
             {worry.text}
           </p>
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex flex-wrap justify-between items-center mt-2 gap-y-2">
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-600">
                 {new Date(worry.createdAt).toLocaleDateString('fr-FR')}
               </span>
               {worry.category && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 whitespace-nowrap">
                   {CATEGORIES.find(c => c.id === worry.category)?.label || worry.category}
                 </span>
               )}

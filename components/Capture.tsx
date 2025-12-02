@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Lock, Calendar, CalendarClock, AlertTriangle, Brain, HeartHandshake } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Lock, Calendar, CalendarClock, AlertTriangle, Brain, HeartHandshake, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Category } from '../types';
 
@@ -29,6 +29,13 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
   const [selectionMode, setSelectionMode] = useState<'preset' | 'custom'>('preset');
   const [daysOffset, setDaysOffset] = useState<number>(1);
   const [customDate, setCustomDate] = useState<string>('');
+  const [addToCalendar, setAddToCalendar] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+
+  useEffect(() => {
+    const checkIsIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(checkIsIOS);
+  }, []);
 
   const [isLocking, setIsLocking] = useState(false);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -53,6 +60,10 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
     } else {
       if (!customDate) return;
       targetTimestamp = new Date(customDate).getTime();
+    }
+
+    if (addToCalendar) {
+      downloadICS(targetTimestamp);
     }
 
     setIsLocking(true);
@@ -81,6 +92,42 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     return now.toISOString().slice(0, 16);
+  };
+
+  const downloadICS = (date: number) => {
+    const startDate = new Date(date);
+    const endDate = new Date(date + 60 * 60 * 1000); // 1 hour
+    const now = new Date();
+
+    const formatDate = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Lucid App//NONSGML v1.0//FR
+BEGIN:VEVENT
+UID:${now.getTime()}@lucid.app
+DTSTAMP:${formatDate(now)}
+DTSTART:${formatDate(startDate)}
+DTEND:${formatDate(endDate)}
+SUMMARY:LUCID IRL
+DESCRIPTION:Il est temps de vérifier votre angoisse sur Lucid. Accédez à l'application ici : ${window.location.origin}
+URL:${window.location.origin}
+LOCATION:${window.location.origin}
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Rappel Lucid
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', 'lucid-rappel.ics');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const isSaveDisabled = !text.trim() || (selectionMode === 'custom' && !customDate);
@@ -302,6 +349,19 @@ export const Capture: React.FC<CaptureProps> = ({ onClose, onSave }) => {
 
               {/* Spacing if not custom to keep layout stable */}
               {selectionMode !== 'custom' && <div className="mb-6 h-1"></div>}
+
+              {/* Calendar Toggle */}
+              <div className="flex items-center gap-3 mb-6 bg-surface/50 p-3 rounded-xl border border-slate-800/50 cursor-pointer" onClick={() => setAddToCalendar(!addToCalendar)}>
+                <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${addToCalendar ? 'bg-accent border-accent' : 'border-slate-600'}`}>
+                  {addToCalendar && <Check size={14} className="text-midnight" />}
+                </div>
+                <div className="flex-1">
+                  <span className="text-sm text-slate-300 font-medium">Ajouter au calendrier</span>
+                  <p className="text-[10px] text-slate-500">
+                    {isIOS ? "Ajoutera l'événement à votre calendrier Apple" : "Télécharge un rappel \"LUCID IRL\" pour le jour J"}
+                  </p>
+                </div>
+              </div>
 
               <button
                 onClick={handleSave}
