@@ -87,31 +87,31 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                             <button
                                 onClick={() => onThemeChange('light')}
                                 className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'light'
-                                    ? 'bg-slate-100 border-accent text-slate-900'
-                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    ? 'bg-orange-50 dark:bg-slate-800 border-accent text-slate-900 dark:text-white'
+                                    : 'bg-surface border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                                     }`}
                             >
-                                <Sun size={24} className={theme === 'light' ? 'text-orange-500' : ''} />
+                                <Sun size={24} className={theme === 'light' ? 'text-orange-500' : 'text-slate-400'} />
                                 <span className="text-sm font-medium">Clair</span>
                             </button>
                             <button
                                 onClick={() => onThemeChange('dark')}
                                 className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'dark'
-                                    ? 'bg-slate-800 border-accent text-white'
-                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    ? 'bg-slate-200 dark:bg-slate-800 border-accent text-slate-900 dark:text-white'
+                                    : 'bg-surface border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                                     }`}
                             >
-                                <Moon size={24} className={theme === 'dark' ? 'text-accent' : ''} />
+                                <Moon size={24} className={theme === 'dark' ? 'text-accent' : 'text-slate-400'} />
                                 <span className="text-sm font-medium">Sombre</span>
                             </button>
                             <button
                                 onClick={() => onThemeChange('system')}
                                 className={`flex flex-col items-center justify-center gap-2 p-4 rounded-xl border transition-all ${theme === 'system'
-                                    ? 'bg-slate-800 border-accent text-white'
-                                    : 'bg-surface border-slate-800 text-slate-400 hover:bg-slate-800'
+                                    ? 'bg-blue-50 dark:bg-slate-800 border-accent text-slate-900 dark:text-white'
+                                    : 'bg-surface border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                                     }`}
                             >
-                                <Monitor size={24} className={theme === 'system' ? 'text-blue-400' : ''} />
+                                <Monitor size={24} className={theme === 'system' ? 'text-blue-500' : 'text-slate-400'} />
                                 <span className="text-sm font-medium">Système</span>
                             </button>
                         </div>
@@ -170,9 +170,9 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                         <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
                             Confidentialité
                         </label>
-                        <div className="bg-surface/50 border border-slate-800 rounded-xl p-6 flex items-start gap-6">
-                            <div className="p-3 bg-emerald-900/20 rounded-lg">
-                                <Shield className="text-emerald-500" size={24} />
+                        <div className="bg-emerald-50/50 dark:bg-surface/50 border border-emerald-200 dark:border-slate-800 rounded-xl p-6 flex items-start gap-6">
+                            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
+                                <Shield className="text-emerald-600 dark:text-emerald-500" size={24} />
                             </div>
                             <div>
                                 <h3 className="text-[rgb(var(--color-text-main))] text-lg font-medium mb-2">100% Privé & Hors Ligne</h3>
@@ -221,9 +221,9 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                         <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
                             Votre Avis
                         </label>
-                        <div className="bg-surface border border-slate-800 rounded-xl p-6">
+                        <div className="bg-slate-50 dark:bg-surface border border-slate-200 dark:border-slate-800 rounded-xl p-6">
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="p-2 bg-slate-800 rounded-lg">
+                                <div className="p-2 bg-accent/10 dark:bg-slate-800 rounded-lg">
                                     <MessageSquare size={20} className="text-accent" />
                                 </div>
                                 <div>
@@ -257,9 +257,9 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                         <label className="block text-xs uppercase text-slate-500 tracking-wider mb-4 font-bold">
                             Aide & Urgence
                         </label>
-                        <div className="bg-rose-900/10 border border-rose-900/30 rounded-xl p-6 flex items-start gap-6">
-                            <div className="p-3 bg-rose-900/20 rounded-lg shrink-0">
-                                <HeartHandshake className="text-rose-400" size={24} />
+                        <div className="bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-900/30 rounded-xl p-6 flex items-start gap-6">
+                            <div className="p-3 bg-rose-100 dark:bg-rose-900/20 rounded-lg shrink-0">
+                                <HeartHandshake className="text-rose-500 dark:text-rose-400" size={24} />
                             </div>
                             <div className="flex-1">
                                 <h3 className="text-[rgb(var(--color-text-main))] text-lg font-medium mb-2">Besoin d'aide immédiate ?</h3>
@@ -268,7 +268,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                 </p>
                                 <a
                                     href="tel:3114"
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600/20 text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-sm border border-rose-600/30"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-rose-100 dark:bg-rose-600/20 text-rose-600 dark:text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-sm border border-rose-300 dark:border-rose-600/30"
                                 >
                                     📞 Appeler le 3114
                                 </a>
@@ -277,14 +277,14 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                     </section>
 
                     {/* Danger Zone */}
-                    <section className="pt-8 border-t border-slate-900/50">
-                        <label className="block text-xs uppercase text-red-900/50 tracking-wider mb-4 font-bold">
+                    <section className="pt-8 border-t border-slate-200 dark:border-slate-900/50">
+                        <label className="block text-xs uppercase text-red-400 dark:text-red-900/50 tracking-wider mb-4 font-bold">
                             Zone de danger
                         </label>
                         {!confirmReset ? (
                             <button
                                 onClick={() => setConfirmReset(true)}
-                                className="px-6 py-4 border border-red-900/30 text-red-400/60 rounded-xl hover:bg-red-900/10 transition-colors text-sm font-medium flex items-center gap-3 hover:text-red-400"
+                                className="px-6 py-4 border border-red-200 dark:border-red-900/30 text-red-400 dark:text-red-400/60 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-sm font-medium flex items-center gap-3 hover:text-red-500 dark:hover:text-red-400"
                             >
                                 <Trash2 size={18} />
                                 Réinitialiser toutes les données
@@ -295,18 +295,18 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                                     initial: { opacity: 0, height: 0 },
                                     animate: { opacity: 1, height: 'auto' }
                                 } as any)}
-                                className="space-y-4 bg-red-900/10 p-6 rounded-xl border border-red-900/30 max-w-md"
+                                className="space-y-4 bg-red-50 dark:bg-red-900/10 p-6 rounded-xl border border-red-200 dark:border-red-900/30 max-w-md"
                             >
-                                <p className="text-red-400 text-lg font-medium">
+                                <p className="text-red-600 dark:text-red-400 text-lg font-medium">
                                     Êtes-vous absolument sûr ?
                                 </p>
-                                <p className="text-red-400/70 text-sm">
+                                <p className="text-red-500 dark:text-red-400/70 text-sm">
                                     Cette action est irréversible. Votre taux de lucidité et votre historique seront effacés.
                                 </p>
                                 <div className="flex gap-4 mt-4">
                                     <button
                                         onClick={() => setConfirmReset(false)}
-                                        className="px-6 py-3 bg-transparent border border-slate-700 text-slate-300 rounded-xl hover:bg-slate-800 transition-colors text-sm font-medium"
+                                        className="px-6 py-3 bg-transparent border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-sm font-medium"
                                     >
                                         Annuler
                                     </button>
@@ -326,7 +326,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentName, onUpdateName, o
                 </div>
 
                 <div className="mt-auto text-center py-12">
-                    <p className="text-xs text-slate-800 uppercase tracking-widest font-bold">LUCID v1.0.0 Web</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-600 uppercase tracking-widest font-bold">LUCID v1.0.0 Web</p>
                 </div>
             </div>
         </motion.div>

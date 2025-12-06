@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "dev": "bunx --bun vite",
+    "build": "bun run tsc && bunx --bun vite build",
+    "preview": "bunx --bun vite preview",
+    "typecheck": "bun run tsc --noEmit"
   },
   "dependencies": {
     "framer-motion": "^11.0.0",

@@ -133,38 +133,38 @@ END:VCALENDAR`;
   const isSaveDisabled = !text.trim() || (selectionMode === 'custom' && !customDate);
 
   return (
-    <div className="absolute inset-0 z-50 bg-midnight flex flex-col p-6 overflow-hidden">
+    <div className="absolute inset-0 z-50 bg-white dark:bg-midnight flex flex-col p-6 overflow-hidden">
 
       {/* Confirmation Modal Overlay */}
       <AnimatePresence>
         {showExitConfirm && (
-          <div className="absolute inset-0 z-[60] bg-midnight/90 backdrop-blur-sm flex items-center justify-center p-6">
+          <div className="absolute inset-0 z-[60] bg-white/90 dark:bg-midnight/90 backdrop-blur-sm flex items-center justify-center p-6">
             <motion.div
               {...({
                 initial: { scale: 0.9, opacity: 0 },
                 animate: { scale: 1, opacity: 1 },
                 exit: { scale: 0.9, opacity: 0 }
               } as any)}
-              className="bg-surface border border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full"
+              className="bg-white dark:bg-surface border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-2xl max-w-sm w-full"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-4 text-slate-400">
+                <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-amber-600 dark:text-slate-400">
                   <AlertTriangle size={24} />
                 </div>
-                <h3 className="text-white text-lg font-medium mb-2">Abandonner cette pensée ?</h3>
-                <p className="text-slate-400 text-sm mb-6">
+                <h3 className="text-slate-900 dark:text-white text-lg font-medium mb-2">Abandonner cette pensée ?</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
                   Le texte saisi sera perdu si vous quittez maintenant.
                 </p>
                 <div className="flex w-full gap-3">
                   <button
                     onClick={() => setShowExitConfirm(false)}
-                    className="flex-1 py-3 rounded-xl bg-slate-800 text-slate-200 font-medium hover:bg-slate-700 transition-colors"
+                    className="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                   >
                     Rester
                   </button>
                   <button
                     onClick={onClose}
-                    className="flex-1 py-3 rounded-xl bg-red-900/20 text-red-400 font-medium border border-red-900/50 hover:bg-red-900/30 transition-colors"
+                    className="flex-1 py-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-medium border border-red-200 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                   >
                     Quitter
                   </button>
@@ -199,42 +199,43 @@ END:VCALENDAR`;
               Quelle est votre inquiétude ?
             </h2>
 
-            {/* Emergency Help Section */}
-            <div className="bg-rose-900/10 border border-rose-900/30 rounded-xl p-4 flex items-start gap-3 mb-6">
-              <div className="p-2 bg-rose-900/20 rounded-lg shrink-0">
-                <HeartHandshake className="text-rose-400" size={18} />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-[rgb(var(--color-text-main))] text-sm font-medium mb-1">Besoin d'aide immédiate ?</h3>
+            {/* Emergency Help Section - Compact */}
+            <details className="mb-4 group">
+              <summary className="flex items-center gap-2 text-rose-500 dark:text-rose-400 text-xs font-medium cursor-pointer list-none">
+                <HeartHandshake size={14} />
+                <span>Besoin d'aide immédiate ?</span>
+                <span className="text-[10px] text-slate-400">(cliquer pour plus d'infos)</span>
+              </summary>
+              <div className="mt-2 bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-900/30 rounded-lg p-3">
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-2">
                   LUCID est un outil d'accompagnement, pas un service médical. Si vous êtes en détresse, contactez le 3114.
                 </p>
                 <a
                   href="tel:3114"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-600/20 text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-xs border border-rose-600/30"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-rose-100 dark:bg-rose-600/20 text-rose-600 dark:text-rose-400 rounded-lg hover:bg-rose-600 hover:text-white transition-all font-bold text-xs border border-rose-300 dark:border-rose-600/30"
                 >
                   📞 Appeler le 3114
                 </a>
               </div>
-            </div>
+            </details>
 
             <textarea
               autoFocus
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="J'ai peur que..."
-              className="w-full bg-transparent text-xl text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-700 outline-none resize-none flex-1 leading-relaxed mb-4 min-h-[150px]"
+              className="w-full bg-slate-50 dark:bg-transparent border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-lg text-slate-700 dark:text-slate-300 placeholder-slate-400 dark:placeholder-slate-600 outline-none focus:border-accent resize-none leading-relaxed mb-3 h-20"
             />
 
-            {/* Categories */}
-            <div className="flex gap-2 mb-6 overflow-x-auto no-scrollbar">
+            {/* Categories - Always visible */}
+            <div className="flex flex-wrap gap-2 mb-4">
               {CATEGORIES.map(cat => (
                 <button
                   key={cat.id}
                   onClick={() => setCategory(cat.id)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${category === cat.id
-                    ? `${cat.color} text-white border-transparent`
-                    : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500'
+                    ? `${cat.color} text-white border-transparent shadow-md`
+                    : 'bg-white dark:bg-transparent border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
                     }`}
                 >
                   {cat.label}
@@ -302,7 +303,7 @@ END:VCALENDAR`;
                     }}
                     className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors border ${selectionMode === 'preset' && daysOffset === opt.value
                       ? 'bg-accent/10 border-accent text-accent'
-                      : 'bg-surface border-slate-800 text-slate-400'
+                      : 'bg-surface border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                   >
                     {opt.label}
@@ -314,7 +315,7 @@ END:VCALENDAR`;
                   onClick={() => setSelectionMode('custom')}
                   className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap transition-colors border flex items-center gap-2 ${selectionMode === 'custom'
                     ? 'bg-accent/10 border-accent text-accent'
-                    : 'bg-surface border-slate-800 text-slate-400'
+                    : 'bg-surface border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                 >
                   <CalendarClock size={14} />
@@ -351,12 +352,12 @@ END:VCALENDAR`;
               {selectionMode !== 'custom' && <div className="mb-6 h-1"></div>}
 
               {/* Calendar Toggle */}
-              <div className="flex items-center gap-3 mb-6 bg-surface/50 p-3 rounded-xl border border-slate-800/50 cursor-pointer" onClick={() => setAddToCalendar(!addToCalendar)}>
-                <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${addToCalendar ? 'bg-accent border-accent' : 'border-slate-600'}`}>
-                  {addToCalendar && <Check size={14} className="text-midnight" />}
+              <div className="flex items-center gap-3 mb-6 bg-slate-50 dark:bg-surface/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800/50 cursor-pointer" onClick={() => setAddToCalendar(!addToCalendar)}>
+                <div className={`w-5 h-5 rounded-md border flex items-center justify-center transition-colors ${addToCalendar ? 'bg-accent border-accent' : 'border-slate-300 dark:border-slate-600'}`}>
+                  {addToCalendar && <Check size={14} className="text-white dark:text-midnight" />}
                 </div>
                 <div className="flex-1">
-                  <span className="text-sm text-slate-300 font-medium">Ajouter au calendrier</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">Ajouter au calendrier</span>
                   <p className="text-[10px] text-slate-500">
                     {isIOS ? "Ajoutera l'événement à votre calendrier Apple" : "Télécharge un rappel \"LUCID IRL\" pour le jour J"}
                   </p>
@@ -378,7 +379,7 @@ END:VCALENDAR`;
         ) : (
           <motion.div
             key="animation-sequence"
-            className="absolute inset-0 flex flex-col items-center justify-center bg-midnight"
+            className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 dark:bg-midnight"
           >
             {/* 1. PAPER CRUMPLING ANIMATION */}
             <motion.div
@@ -396,7 +397,7 @@ END:VCALENDAR`;
                   ease: "easeInOut"
                 }
               } as any)}
-              className="absolute z-20 bg-slate-200 text-midnight p-6 w-64 h-80 shadow-xl overflow-hidden"
+              className="absolute z-20 bg-white dark:bg-slate-200 text-slate-800 dark:text-midnight p-6 w-64 h-80 shadow-xl overflow-hidden border border-slate-200 dark:border-transparent"
               style={{ transformOrigin: "center" }}
             >
               <p className="text-xs font-serif leading-relaxed opacity-60 break-words">
@@ -411,10 +412,10 @@ END:VCALENDAR`;
                 animate: { opacity: 1, scale: 1, y: 0 },
                 transition: { delay: 0.5, duration: 0.5 }
               } as any)}
-              className="relative w-48 h-48 bg-surface border-4 border-slate-700 rounded-3xl flex items-center justify-center overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] z-10"
+              className="relative w-48 h-48 bg-white dark:bg-surface border-4 border-slate-300 dark:border-slate-700 rounded-3xl flex items-center justify-center overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.15)] dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] z-10"
             >
               {/* Safe Interior Details */}
-              <div className="absolute inset-2 border border-slate-800/50 rounded-2xl" />
+              <div className="absolute inset-2 border border-slate-200 dark:border-slate-800/50 rounded-2xl" />
 
               {/* 3. SAFE DOOR CLOSING */}
               <motion.div
@@ -423,7 +424,7 @@ END:VCALENDAR`;
                   animate: { x: "0%" },
                   transition: { delay: 1.4, duration: 0.4, type: "spring", bounce: 0.1 }
                 } as any)}
-                className="absolute inset-0 bg-slate-800 border-l-2 border-slate-600 z-30 flex items-center justify-center"
+                className="absolute inset-0 bg-slate-200 dark:bg-slate-800 border-l-2 border-slate-300 dark:border-slate-600 z-30 flex items-center justify-center"
               >
                 {/* The Lock on the door */}
                 <motion.div
@@ -432,7 +433,7 @@ END:VCALENDAR`;
                     animate: { scale: 1, rotate: 0 },
                     transition: { delay: 1.9, type: "spring" }
                   } as any)}
-                  className="p-4 bg-slate-900 rounded-full border border-slate-700 shadow-lg text-emerald-500"
+                  className="p-4 bg-slate-100 dark:bg-slate-900 rounded-full border border-slate-300 dark:border-slate-700 shadow-lg text-emerald-600 dark:text-emerald-500"
                 >
                   <Lock size={32} strokeWidth={2.5} />
                 </motion.div>
@@ -448,7 +449,7 @@ END:VCALENDAR`;
               } as any)}
               className="mt-12 text-center"
             >
-              <h3 className="text-xl text-white font-light tracking-widest uppercase mb-2">Sécurisé</h3>
+              <h3 className="text-xl text-slate-800 dark:text-white font-light tracking-widest uppercase mb-2">Sécurisé</h3>
               <p className="text-slate-500 text-sm">L'angoisse est enfermée.<br />Reprenez votre vie.</p>
             </motion.div>
 

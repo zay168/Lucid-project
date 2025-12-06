@@ -6,6 +6,7 @@
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Bun](https://img.shields.io/badge/Bun-1.3-F9F1E1?style=for-the-badge&logo=bun&logoColor=black)](https://bun.sh/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
@@ -259,8 +260,10 @@ utils/
 
 ### 📋 Prérequis
 
-- **Node.js** >= 18.0.0
-- **npm** >= 9.0.0
+- **Bun** >= 1.0.0 ([Installation Bun](https://bun.sh/docs/installation))
+- Ou **Node.js** >= 18.0.0 (compatible mais moins rapide)
+
+> 💡 Ce projet utilise **Bun** comme runtime principal. Voir [DOCS_BUN.md](DOCS_BUN.md) pour la documentation complète.
 
 ### ⚡ Installation Rapide
 
@@ -271,23 +274,28 @@ git clone https://github.com/votre-username/lucid-app.git
 # Navigate dans le dossier
 cd lucid-app
 
-# Installe les dépendances
-npm install
+# Installe les dépendances (avec Bun - ~7x plus rapide)
+bun install
 
 # Lance le serveur de développement
-npm run dev
+bun run dev
 ```
 
 L'application sera disponible sur `http://localhost:5173`
+
+> 📖 Pour plus de détails sur Bun, consultez [DOCS_BUN.md](DOCS_BUN.md)
 
 ### 🏗️ Build Production
 
 ```bash
 # Build optimisé pour production
-npm run build
+bun run build
 
 # Preview du build
-npm run preview
+bun run preview
+
+# Vérifier les types TypeScript
+bun run typecheck
 ```
 
 ### 📊 Résultats du Build

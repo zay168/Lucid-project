@@ -30,7 +30,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-midnight z-50 overflow-y-auto overflow-x-hidden selection:bg-accent selection:text-midnight scroll-smooth">
+    <div className="fixed inset-0 bg-slate-50 dark:bg-midnight z-50 overflow-y-auto overflow-x-hidden selection:bg-accent selection:text-midnight scroll-smooth">
 
       {/* Fixed Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -38,23 +38,23 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
           {...({
             animate: {
               scale: [1, 1.2, 1],
-              opacity: [0.1, 0.15, 0.1],
+              opacity: [0.05, 0.1, 0.05],
               rotate: [0, 45, 0]
             },
             transition: { duration: 20, repeat: Infinity, ease: "linear" }
           } as any)}
-          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-accent/10 rounded-full blur-[60px] md:blur-[120px] will-change-transform"
+          className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-accent/20 dark:bg-accent/10 rounded-full blur-[60px] md:blur-[120px] will-change-transform"
         />
         <motion.div
           {...({
             animate: {
               scale: [1, 1.1, 1],
-              opacity: [0.1, 0.2, 0.1],
+              opacity: [0.05, 0.15, 0.05],
               x: [0, -50, 0]
             },
             transition: { duration: 15, repeat: Infinity, ease: "easeInOut" }
           } as any)}
-          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-900/20 rounded-full blur-[80px] md:blur-[150px] will-change-transform"
+          className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-[80px] md:blur-[150px] will-change-transform"
         />
       </div>
 
@@ -70,8 +70,8 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
           className="max-w-5xl mx-auto relative flex flex-col items-center"
         >
           <motion.div variants={fadeIn} className="mb-8 md:mb-12 relative">
-            <div className="absolute inset-0 bg-accent/30 blur-3xl rounded-full" />
-            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-surface/50 backdrop-blur-md border border-slate-700/50 flex items-center justify-center shadow-[0_0_60px_-15px_rgba(167,139,250,0.5)] mx-auto">
+            <div className="absolute inset-0 bg-accent/20 dark:bg-accent/30 blur-3xl rounded-full" />
+            <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-white/80 dark:bg-surface/50 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center shadow-[0_0_60px_-15px_rgba(167,139,250,0.4)] dark:shadow-[0_0_60px_-15px_rgba(167,139,250,0.5)] mx-auto">
               <BrainCircuit size={32} className="text-accent md:w-10 md:h-10" strokeWidth={1.5} />
             </div>
           </motion.div>
@@ -207,7 +207,7 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
             className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
           >
             {/* Card 1: CBT */}
-            <motion.div variants={fadeIn} className="col-span-1 md:col-span-2 bg-gradient-to-br from-surface to-slate-900 border border-slate-800 p-6 md:p-10 rounded-3xl relative overflow-hidden">
+            <motion.div variants={fadeIn} className="col-span-1 md:col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 dark:from-surface dark:to-slate-900 border border-slate-700 dark:border-slate-800 p-6 md:p-10 rounded-3xl relative overflow-hidden">
               <div className="relative z-10">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-4 md:mb-6">
                   <BrainCircuit className="text-accent w-6 h-6 md:w-auto md:h-auto" />
@@ -313,8 +313,8 @@ export const Landing: React.FC<LandingProps> = ({ onEnter }) => {
       </section>
 
       {/* --- FOOTER --- */}
-      <footer className="py-8 md:py-12 text-center text-slate-600 text-xs md:text-sm relative z-10 border-t border-slate-200 dark:border-slate-900">
-        <p className="mb-2">Code & Design par <span className="text-slate-400 font-medium">@zay168</span></p>
+      <footer className="py-8 md:py-12 text-center text-slate-500 dark:text-slate-600 text-xs md:text-sm relative z-10 border-t border-slate-200 dark:border-slate-900">
+        <p className="mb-2">Code & Design par <span className="text-slate-700 dark:text-slate-400 font-medium">@zay168</span></p>
         <p>LUCID © Tous droits réservés.</p>
       </footer>
 

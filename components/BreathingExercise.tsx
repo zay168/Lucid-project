@@ -52,7 +52,7 @@ export const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose })
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-midnight/95 backdrop-blur-xl text-[rgb(var(--color-text-main))]">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 dark:bg-midnight/95 backdrop-blur-xl text-[rgb(var(--color-text-main))]">
             {/* Close Button */}
             <button
                 onClick={onClose}

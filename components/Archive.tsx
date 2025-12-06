@@ -33,7 +33,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const LONG_PRESS_DURATION = 12000;
+  const LONG_PRESS_DURATION = 6000;
   const PROGRESS_UPDATE_INTERVAL = 50;
 
   const startPress = useCallback(() => {
@@ -88,10 +88,10 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
       onPointerLeave={cancelPress}
       onContextMenu={(e) => e.preventDefault()}
       className={`relative p-4 rounded-xl border transition-all select-none overflow-hidden touch-none ${isPending
-        ? 'bg-surface border-slate-800 opacity-100'
+        ? 'bg-white dark:bg-surface border-slate-200 dark:border-slate-800 opacity-100'
         : isPositive
-          ? 'bg-surface/50 border-slate-900 opacity-50 hover:opacity-80'
-          : 'bg-surface/50 border-red-900/20 opacity-80'
+          ? 'bg-slate-50/80 dark:bg-surface/50 border-slate-200 dark:border-slate-900 opacity-60 hover:opacity-80'
+          : 'bg-red-50/50 dark:bg-surface/50 border-red-200 dark:border-red-900/20 opacity-80'
         } ${isPressing ? 'scale-[0.98]' : 'scale-100'}`}
     >
       <AnimatePresence>
@@ -116,7 +116,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
 
       <div className="flex items-start gap-3 relative z-10">
         <div className="mt-1">
-          {isPending && <div className="w-5 h-5 rounded-full border-2 border-slate-700 border-t-accent animate-spin" />}
+          {isPending && <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 border-t-accent animate-spin" />}
           {!isPending && isPositive && <CheckCircle2 size={20} className="text-emerald-500/70" />}
           {!isPending && !isPositive && <XCircle size={20} className="text-red-500/70" />}
         </div>
@@ -141,7 +141,7 @@ const ArchiveItem = memo<ArchiveItemProps>(({ worry, onDelete, onVerify, index }
                 onClick={handleVerify}
                 className={`text-[10px] uppercase tracking-wider font-bold px-3 py-1 rounded-full transition-colors ${isOverdue
                   ? 'bg-accent text-midnight hover:bg-white animate-pulse'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
               >
                 {isOverdue ? 'Vérifier maintenant' : 'En cours'}
@@ -272,18 +272,18 @@ export const Archive = memo<ArchiveProps>(({ worries, onDelete, onVerify }) => {
             } as any)}
             className="grid grid-cols-3 gap-2 mb-8"
           >
-            <div className="bg-surface/50 border border-slate-200 dark:border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+            <div className="bg-white dark:bg-surface/50 border border-slate-200 dark:border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
               <span className="text-3xl font-bold text-[rgb(var(--color-text-main))] tabular-nums">{stats.total}</span>
               <span className="text-[9px] text-slate-500 uppercase tracking-widest mt-1 font-medium">Total</span>
             </div>
 
-            <div className="bg-emerald-900/10 border border-emerald-500/10 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold text-emerald-400 tabular-nums">{stats.avoided}</span>
-              <span className="text-[9px] text-emerald-600/70 uppercase tracking-widest mt-1 font-medium">Évitées</span>
+            <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/10 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{stats.avoided}</span>
+              <span className="text-[9px] text-emerald-700 dark:text-emerald-600/70 uppercase tracking-widest mt-1 font-medium">Évitées</span>
             </div>
 
-            <div className="bg-surface/50 border border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
-              <span className="text-3xl font-bold text-red-400/80 tabular-nums">{stats.happened}</span>
+            <div className="bg-red-50/50 dark:bg-surface/50 border border-red-200/50 dark:border-slate-800/50 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+              <span className="text-3xl font-bold text-red-500 dark:text-red-400/80 tabular-nums">{stats.happened}</span>
               <span className="text-[9px] text-slate-500 uppercase tracking-widest mt-1 font-medium">Réalisées</span>
             </div>
           </motion.div>

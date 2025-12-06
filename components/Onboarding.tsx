@@ -38,7 +38,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-midnight flex flex-col items-center justify-center p-8 text-center overflow-hidden transition-colors duration-300">
+    <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-midnight flex flex-col items-center justify-center p-8 text-center overflow-hidden transition-colors duration-300">
       <AnimatePresence mode="wait">
 
         {/* STEP 0: WELCOME */}
@@ -95,12 +95,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
             <h2 className="text-2xl text-[rgb(var(--color-text-main))] font-bold mb-6">Avant de commencer</h2>
 
-            <div className="bg-rose-900/10 border border-rose-900/30 rounded-xl p-6 mb-8 text-left">
-              <p className="text-rose-800 dark:text-rose-200/90 text-sm leading-relaxed mb-4">
-                <strong className="text-rose-900 dark:text-rose-400 block mb-2 text-base">LUCID n'est pas un médecin.</strong>
+            <div className="bg-rose-50 dark:bg-rose-900/10 border border-rose-200 dark:border-rose-900/30 rounded-xl p-6 mb-8 text-left">
+              <p className="text-rose-700 dark:text-rose-200/90 text-sm leading-relaxed mb-4">
+                <strong className="text-rose-800 dark:text-rose-400 block mb-2 text-base">LUCID n'est pas un médecin.</strong>
                 Cette application est un outil d'auto-assistance pour l'anxiété quotidienne légère. Elle ne remplace pas un suivi psychologique.
               </p>
-              <p className="text-rose-800 dark:text-rose-200/90 text-sm leading-relaxed">
+              <p className="text-rose-700 dark:text-rose-200/90 text-sm leading-relaxed">
                 Si tu te sens en détresse ou si tu as des idées noires, parle-en immédiatement à un adulte ou appelle le :
               </p>
               <div className="mt-4 flex items-center justify-center">
